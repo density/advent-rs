@@ -1,31 +1,26 @@
 const INPUT: &str = include_str!("../input.txt");
 
-fn count_trees(grid: &[Vec<char>], dr: usize, dc: usize) -> usize {
+fn count_trees(slopes: &'static [(usize, usize)]) -> impl Iterator<Item = usize> {
+    let grid: Vec<Vec<char>> = INPUT.lines().map(|line| line.chars().collect()).collect();
+
     let rows = grid.len();
     let cols = grid[0].len();
 
-    (0..rows)
-        .step_by(dr)
-        .zip((0usize..).step_by(dc))
-        .filter(|&(r, c)| grid[r][c % cols] == '#')
-        .count()
+    slopes.iter().map(move |&(dr, dc)| {
+        (0..rows)
+            .step_by(dr)
+            .zip((0..cols).cycle().step_by(dc))
+            .filter(|&(r, c)| grid[r][c] == '#')
+            .count()
+    })
 }
 
 fn part1() -> usize {
-    let grid: Vec<Vec<char>> = INPUT.lines().map(|line| line.chars().collect()).collect();
-
-    count_trees(&grid, 1, 3)
+    count_trees(&[(1, 3)]).next().unwrap()
 }
 
 fn part2() -> usize {
-    let grid: Vec<Vec<char>> = INPUT.lines().map(|line| line.chars().collect()).collect();
-
-    let slopes = [(1, 1), (1, 3), (1, 5), (1, 7), (2, 1)];
-
-    slopes
-        .iter()
-        .map(|&(dr, dc)| count_trees(&grid, dr, dc))
-        .product()
+    count_trees(&[(1, 1), (1, 3), (1, 5), (1, 7), (2, 1)]).product()
 }
 
 fn main() {
