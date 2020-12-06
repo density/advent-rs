@@ -1,4 +1,4 @@
-use std::collections::{HashMap};
+use std::collections::HashMap;
 
 const INPUT: &str = include_str!("../input.txt");
 
@@ -33,7 +33,12 @@ fn is_valid(key: &str, value: &str) -> bool {
             }
         }
         "hcl" => match value.split_at(1) {
-            ("#", rest) => rest.len() == 6 && rest.chars().all(|c| c.to_ascii_lowercase().is_ascii_hexdigit()),
+            ("#", rest) => {
+                rest.len() == 6
+                    && rest
+                        .chars()
+                        .all(|c| c.to_ascii_lowercase().is_ascii_hexdigit())
+            }
             _ => false,
         },
         "ecl" => matches!(value, "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth"),

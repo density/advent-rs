@@ -1,5 +1,6 @@
+use itertools::Itertools;
 use std::collections::HashSet;
-use std::convert::{TryFrom, TryInto};
+use std::convert::TryFrom;
 
 const INPUT: &str = include_str!("../input.txt");
 
@@ -23,18 +24,15 @@ fn part2() -> u64 {
     INPUT
         .split("\n\n")
         .map(|answers| {
-            let mut hashes = answers
-                .lines()
-                .map(|line| line.chars().collect::<HashSet<_>>());
-
-            let mut all = hashes.next().unwrap().clone();
-
-            for hash in hashes {
-                all = all.intersection(&hash).cloned().collect();
-            }
-
-            u64::try_from(all.len()).unwrap()
-
+            u64::try_from(
+                answers
+                    .lines()
+                    .map(|line| line.chars().collect::<HashSet<_>>())
+                    .fold1(|seen, next| seen.intersection(&next).cloned().collect())
+                    .unwrap()
+                    .len(),
+            )
+            .unwrap()
         })
         .sum()
 }

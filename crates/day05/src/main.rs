@@ -16,7 +16,6 @@ fn part1() -> u64 {
         .map(|line| get_seat(&mut line.chars()))
         .max()
         .unwrap()
-        .into()
 }
 
 fn part2() -> u64 {

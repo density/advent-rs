@@ -1,5 +1,5 @@
-use std::collections::HashSet;
 use std::cmp::Ordering;
+use std::collections::HashSet;
 
 const INPUT: &str = include_str!("../input.txt");
 
