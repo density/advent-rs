@@ -1,6 +1,7 @@
 use regex::Regex;
 
 use std::collections::HashMap;
+use std::time::Instant;
 
 const INPUT: &str = include_str!("../input.txt");
 
@@ -21,10 +22,10 @@ fn make_graph() -> Graph {
             }
 
             let dst_colors = cap_iter
-                .filter_map(|cap| {
-                        let color = cap.name("color").unwrap().as_str();
-                        let count: u64 = cap.name("count").unwrap().as_str().parse().unwrap();
-                        Some((count, color.to_owned()))
+                .map(|cap| {
+                    let color = cap.name("color").unwrap().as_str();
+                    let count: u64 = cap.name("count").unwrap().as_str().parse().unwrap();
+                    (count, color.to_owned())
                 })
                 .collect();
 
@@ -35,25 +36,29 @@ fn make_graph() -> Graph {
 
 fn part1() -> usize {
     let graph = make_graph();
+    let mut memo = HashMap::new();
+    memo.insert("shiny gold".to_string(), true);
 
     graph
         .keys()
-        .filter(|&src_bag| can_reach_gold(&graph, src_bag))
+        .filter(|&src_bag| can_reach_gold(&graph, &mut memo, src_bag))
         .count()
         - 1
 }
 
-fn can_reach_gold(graph: &Graph, start_color: &str) -> bool {
-    if start_color == "shiny gold" {
-        return true;
+fn can_reach_gold(graph: &Graph, memo: &mut HashMap<String, bool>, start_color: &str) -> bool {
+    if let Some(result) = memo.get(start_color) {
+        return *result;
     }
 
-    match graph.get(start_color) {
+    let result = match graph.get(start_color) {
         Some(other_colors) => other_colors
             .iter()
-            .any(|(_count, color)| color == "shiny gold" || can_reach_gold(&graph, color)),
+            .any(|(_count, color)| can_reach_gold(&graph, memo, color)),
         None => false,
-    }
+    };
+    memo.insert(start_color.to_string(), result);
+    result
 }
 
 fn bags_required(graph: &Graph, memo: &mut HashMap<String, u64>, start_color: &str) -> u64 {
@@ -81,8 +86,12 @@ fn part2() -> u64 {
 }
 
 fn main() {
+    let start = Instant::now();
     println!("part 1: {}", part1());
+    println!("part 1 took {}ms", (Instant::now() - start).as_millis());
+    let start = Instant::now();
     println!("part 2: {}", part2());
+    println!("part 2 took {}ms", (Instant::now() - start).as_millis());
 }
 
 #[cfg(test)]
