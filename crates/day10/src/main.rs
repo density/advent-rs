@@ -26,21 +26,27 @@ fn part1() -> u64 {
 }
 
 fn part2() -> u64 {
-    let mut numbers: Vec<u64> = INPUT.lines().map(|line| line.parse().unwrap()).collect();
-    numbers.push(0);
-    numbers.sort_unstable();
+    let mut all_adapters: Vec<u64> = INPUT.lines().map(|line| line.parse().unwrap()).collect();
+    all_adapters.push(0);
+    all_adapters.sort_unstable();
 
     let mut memo = VecDeque::with_capacity(3);
     memo.push_back(1);
 
-    for i in 1..numbers.len() {
-        let mut ways = 0;
+    for i in 1..all_adapters.len() {
+        let last_3_iter = all_adapters.iter().skip(i.saturating_sub(3)).take(3);
+        let cur_adapter = all_adapters[i];
 
-        for (memo_val, num_idx) in memo.iter().zip(i.saturating_sub(3)..i) {
-            if numbers[i] - numbers[num_idx] <= 3 {
-                ways += memo_val;
-            }
-        }
+        let ways = memo
+            .iter()
+            .zip(last_3_iter)
+            .fold(0, |acc, (memo_val, adapter)| {
+                if cur_adapter - adapter <= 3 {
+                    acc + memo_val
+                } else {
+                    acc
+                }
+            });
 
         memo.push_back(ways);
         if memo.len() > 3 {
