@@ -38,7 +38,7 @@ fn part2() -> i64 {
         .map(|line| line.parse::<i64>().unwrap())
         .collect();
 
-    let target = 556543474;
+    let target = 556_543_474;
 
     let mut lo = 0;
     let mut hi = 0;

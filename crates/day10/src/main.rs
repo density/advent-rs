@@ -11,7 +11,7 @@ fn part1() -> u64 {
     let mut prev = 0;
     let mut counts = [0; 2];
 
-    for adapter in numbers.into_iter() {
+    for adapter in numbers {
         let diff = usize::try_from(adapter - prev).unwrap();
 
         let index = diff % 3;

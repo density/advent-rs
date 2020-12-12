@@ -66,7 +66,7 @@ fn count_neighbors(grid: &[GridRow], r: usize, c: usize, extended: bool) -> u64 
                     break;
                 }
                 Some('.') => (),
-                _ => unreachable!()
+                _ => unreachable!(),
             }
 
             if extended {
