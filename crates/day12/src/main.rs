@@ -1,64 +1,13 @@
-use std::mem;
-use std::ops::{AddAssign, Mul};
+use hymns::vec2d::{Rotation, Vec2D};
 use std::time::Instant;
 
 const INPUT: &str = include_str!("../input.txt");
 
-#[derive(Default, Copy, Clone)]
-struct Vector {
-    x: i64,
-    y: i64,
-}
-
-impl Vector {
-    fn new(x: i64, y: i64) -> Self {
-        Self { x, y }
-    }
-
-    fn rotate(&mut self, degrees: i64) {
-        match degrees {
-            0 => (),
-            90 | -270 => {
-                mem::swap(&mut self.x, &mut self.y);
-                self.y = -self.y
-            }
-            180 | -180 => {
-                self.x = -self.x;
-                self.y = -self.y;
-            }
-            270 | -90 => {
-                mem::swap(&mut self.x, &mut self.y);
-                self.x = -self.x;
-            }
-            _ => unreachable!(),
-        }
-    }
-
-    fn move_by(&mut self, delta: Vector) {
-        *self += delta;
-    }
-}
-
-impl AddAssign<Vector> for Vector {
-    fn add_assign(&mut self, rhs: Vector) {
-        self.x += rhs.x;
-        self.y += rhs.y;
-    }
-}
-
-impl Mul<i64> for Vector {
-    type Output = Vector;
-
-    fn mul(self, rhs: i64) -> Self::Output {
-        Vector::new(self.x * rhs, self.y * rhs)
-    }
-}
-
 #[derive(Copy, Clone)]
 enum Command {
-    Move(Vector, i64),
+    Move(Vec2D<i64>, i64),
     Forward(i64),
-    Turn(i64),
+    Turn(Rotation),
 }
 
 fn read_commands() -> impl Iterator<Item = Command> {
@@ -67,12 +16,28 @@ fn read_commands() -> impl Iterator<Item = Command> {
         let amt: i64 = amt.parse().unwrap();
 
         match cmd_str {
-            "N" => Command::Move(Vector::new(0, 1), amt),
-            "S" => Command::Move(Vector::new(0, -1), amt),
-            "E" => Command::Move(Vector::new(1, 0), amt),
-            "W" => Command::Move(Vector::new(-1, 0), amt),
-            "L" => Command::Turn(-amt),
-            "R" => Command::Turn(amt),
+            "N" => Command::Move(Vec2D::new(0, 1), amt),
+            "S" => Command::Move(Vec2D::new(0, -1), amt),
+            "E" => Command::Move(Vec2D::new(1, 0), amt),
+            "W" => Command::Move(Vec2D::new(-1, 0), amt),
+            "R" => {
+                let rotation = match amt {
+                    90 => Rotation::Right90,
+                    180 => Rotation::OneEighty,
+                    270 => Rotation::Left90,
+                    _ => unreachable!(),
+                };
+                Command::Turn(rotation)
+            }
+            "L" => {
+                let rotation = match amt {
+                    90 => Rotation::Left90,
+                    180 => Rotation::OneEighty,
+                    270 => Rotation::Right90,
+                    _ => unreachable!(),
+                };
+                Command::Turn(rotation)
+            }
             "F" => Command::Forward(amt),
             _ => unreachable!(),
         }
@@ -80,8 +45,8 @@ fn read_commands() -> impl Iterator<Item = Command> {
 }
 
 fn part1() -> i64 {
-    let mut ship_pos = Vector::default();
-    let mut ship_heading = Vector::new(1, 0);
+    let mut ship_pos = Vec2D::default();
+    let mut ship_heading = Vec2D::new(1, 0);
 
     for command in read_commands() {
         match command {
@@ -95,8 +60,8 @@ fn part1() -> i64 {
 }
 
 fn part2() -> i64 {
-    let mut ship_pos = Vector::default();
-    let mut waypoint_pos = Vector::new(10, 1);
+    let mut ship_pos = Vec2D::default();
+    let mut waypoint_pos = Vec2D::new(10, 1);
 
     for command in read_commands() {
         match command {
