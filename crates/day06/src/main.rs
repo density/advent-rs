@@ -11,7 +11,7 @@ fn part1() -> u64 {
             u64::try_from(
                 answers
                     .lines()
-                    .flat_map(|line| line.chars())
+                    .flat_map(str::chars)
                     .collect::<HashSet<_>>()
                     .len(),
             )
