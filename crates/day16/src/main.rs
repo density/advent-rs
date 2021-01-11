@@ -1,9 +1,9 @@
 use regex::Regex;
 use std::collections::{HashMap, HashSet};
 
-use std::iter::{FromIterator};
+use std::iter::FromIterator;
 
-use std::ops::{RangeInclusive};
+use std::ops::RangeInclusive;
 use std::time::Instant;
 
 const INPUT: &str = include_str!("../input.txt");

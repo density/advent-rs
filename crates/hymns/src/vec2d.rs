@@ -1,7 +1,7 @@
 use num_traits::{PrimInt, Signed};
 
 use std::mem;
-use std::ops::{AddAssign, Mul};
+use std::ops::{Add, AddAssign, Mul};
 
 #[derive(Copy, Clone)]
 pub enum Rotation {
@@ -10,7 +10,7 @@ pub enum Rotation {
     Left90,
 }
 
-#[derive(Default, Copy, Clone)]
+#[derive(Debug, Eq, PartialEq, Hash, Default, Copy, Clone)]
 pub struct Vec2D<T: PrimInt + Signed + AddAssign> {
     pub x: T,
     pub y: T,
@@ -55,5 +55,13 @@ impl<T: PrimInt + Signed + AddAssign> Mul<T> for Vec2D<T> {
 
     fn mul(self, rhs: T) -> Self::Output {
         Vec2D::new(self.x * rhs, self.y * rhs)
+    }
+}
+
+impl<T: PrimInt + Signed + AddAssign> Add<Vec2D<T>> for Vec2D<T> {
+    type Output = Vec2D<T>;
+
+    fn add(self, rhs: Vec2D<T>) -> Self::Output {
+        Vec2D::new(self.x + rhs.x, self.y + rhs.y)
     }
 }
