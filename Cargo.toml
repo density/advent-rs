@@ -1,2 +1,6 @@
 [workspace]
-members = ["crates/*"]
+members = [
+    "2020/*",
+    "2021/*",
+    "hymns"
+]
