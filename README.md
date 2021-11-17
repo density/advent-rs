@@ -1,2 +1,2 @@
-# Advent of Code 2020, in Rust
+# Advent of Code, in Rust
 
