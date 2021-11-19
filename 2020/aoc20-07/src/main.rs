@@ -54,7 +54,7 @@ fn can_reach_gold(graph: &Graph, memo: &mut HashMap<String, bool>, start_color: 
     let result = match graph.get(start_color) {
         Some(other_colors) => other_colors
             .iter()
-            .any(|(_count, color)| can_reach_gold(&graph, memo, color)),
+            .any(|(_count, color)| can_reach_gold(graph, memo, color)),
         None => false,
     };
     memo.insert(start_color.to_string(), result);

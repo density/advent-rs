@@ -38,7 +38,7 @@ fn shunting_yard(line: &'static str, precedence_fn: impl Fn(&Token) -> usize) ->
                     match operator {
                         Token::LeftParen | Token::RightParen => break,
                         Token::Plus | Token::Star => {
-                            if precedence_fn(&operator) >= precedence_fn(&token) {
+                            if precedence_fn(operator) >= precedence_fn(&token) {
                                 output.push(operators.pop().unwrap());
                             } else {
                                 break;

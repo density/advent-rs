@@ -85,7 +85,7 @@ impl Tile {
 
         reversed_edges.iter_mut().for_each(|edge| edge.reverse());
 
-        edges.extend(reversed_edges.drain(..));
+        edges.append(&mut reversed_edges);
         edges
     }
 
