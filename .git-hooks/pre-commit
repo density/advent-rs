@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+files=()
+while IFS='' read -r line; do files+=("$line"); done < <(git diff --cached --name-only --diff-filter=ACMR)
+
+if [ ${#files[@]} -ne 0 ]; then
+    cargo fmt
+    git add -u "${files[@]}"
+fi
+
+cargo clippy
