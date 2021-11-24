@@ -1,28 +1,38 @@
 use std::time::Instant;
 
+use md5::Digest;
+
 const INPUT: &str = include_str!("../input.txt");
 
-fn inputs(prefix: &str) -> impl Iterator<Item = String> + '_ {
+fn inputs(prefix: &str) -> impl Iterator<Item = Digest> + '_ {
     let prefix_bytes = prefix.as_bytes();
 
     (1..).map(move |n| {
         let to_hash = [prefix_bytes, n.to_string().as_bytes()].concat();
 
-        let digest = md5::compute(to_hash);
-        format!("{:x}", digest)
+        md5::compute(to_hash)
     })
 }
 
 fn part1() -> usize {
     inputs(INPUT)
-        .position(|s| s.chars().take(5).all(|c| c == '0'))
+        .position(|s| {
+            let n = u32::from_ne_bytes(s[0..4].try_into().unwrap()).to_be();
+
+            // bits should be 00 00 0x xx
+            n.to_be() >> 12 == 0
+        })
         .unwrap()
         + 1
 }
 
 fn part2() -> usize {
     inputs(INPUT)
-        .position(|s| s.chars().take_while(|&c| c == '0').count() == 6)
+        .position(|s| {
+            let n = u32::from_ne_bytes(s[0..4].try_into().unwrap()).to_be();
+            // bits should be 00 00 00 xy where x is not 0
+            n >> 8 == 0 && n & 0xf0 != 0
+        })
         .unwrap()
         + 1
 }
