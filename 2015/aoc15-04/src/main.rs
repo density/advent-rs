@@ -20,7 +20,7 @@ fn part1() -> usize {
             let n = u32::from_ne_bytes(s[0..4].try_into().unwrap()).to_be();
 
             // bits should be 00 00 0x xx
-            n.to_be() >> 12 == 0
+            n >> 12 == 0
         })
         .unwrap()
         + 1
