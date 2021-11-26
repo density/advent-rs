@@ -1,7 +1,7 @@
-use num_traits::{PrimInt, Signed};
-
 use std::mem;
 use std::ops::{Add, AddAssign, Mul};
+
+use num_traits::{PrimInt, Signed};
 
 #[derive(Copy, Clone)]
 pub enum Rotation {
@@ -11,16 +11,22 @@ pub enum Rotation {
 }
 
 #[derive(Debug, Eq, PartialEq, Hash, Default, Copy, Clone)]
-pub struct Vec2D<T: PrimInt + Signed + AddAssign> {
+pub struct Vec2D<T: PrimInt + AddAssign> {
     pub x: T,
     pub y: T,
 }
 
-impl<T: PrimInt + Signed + AddAssign> Vec2D<T> {
+impl<T: PrimInt + AddAssign> Vec2D<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 
+    pub fn move_by(&mut self, delta: Vec2D<T>) {
+        *self += delta;
+    }
+}
+
+impl<T: PrimInt + Signed + AddAssign> Vec2D<T> {
     pub fn rotate(&mut self, degrees: Rotation) {
         match degrees {
             Rotation::Right90 => {
@@ -37,20 +43,16 @@ impl<T: PrimInt + Signed + AddAssign> Vec2D<T> {
             }
         }
     }
-
-    pub fn move_by(&mut self, delta: Vec2D<T>) {
-        *self += delta;
-    }
 }
 
-impl<T: PrimInt + Signed + AddAssign> AddAssign<Vec2D<T>> for Vec2D<T> {
+impl<T: PrimInt + AddAssign> AddAssign<Vec2D<T>> for Vec2D<T> {
     fn add_assign(&mut self, rhs: Vec2D<T>) {
         self.x += rhs.x;
         self.y += rhs.y;
     }
 }
 
-impl<T: PrimInt + Signed + AddAssign> Mul<T> for Vec2D<T> {
+impl<T: PrimInt + AddAssign> Mul<T> for Vec2D<T> {
     type Output = Vec2D<T>;
 
     fn mul(self, rhs: T) -> Self::Output {
@@ -58,7 +60,7 @@ impl<T: PrimInt + Signed + AddAssign> Mul<T> for Vec2D<T> {
     }
 }
 
-impl<T: PrimInt + Signed + AddAssign> Add<Vec2D<T>> for Vec2D<T> {
+impl<T: PrimInt + AddAssign> Add<Vec2D<T>> for Vec2D<T> {
     type Output = Vec2D<T>;
 
     fn add(self, rhs: Vec2D<T>) -> Self::Output {
