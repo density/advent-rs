@@ -50,8 +50,8 @@ fn part1() -> i64 {
 
     for command in read_commands() {
         match command {
-            Command::Move(mov_vec, distance) => ship_pos.move_by(mov_vec * distance),
-            Command::Forward(distance) => ship_pos.move_by(ship_heading * distance),
+            Command::Move(mov_vec, distance) => ship_pos += mov_vec * distance,
+            Command::Forward(distance) => ship_pos += ship_heading * distance,
             Command::Turn(degrees) => ship_heading.rotate(degrees),
         }
     }
@@ -65,8 +65,8 @@ fn part2() -> i64 {
 
     for command in read_commands() {
         match command {
-            Command::Move(mov_vec, distance) => waypoint_pos.move_by(mov_vec * distance),
-            Command::Forward(distance) => ship_pos.move_by(waypoint_pos * distance),
+            Command::Move(mov_vec, distance) => waypoint_pos += mov_vec * distance,
+            Command::Forward(distance) => ship_pos += waypoint_pos * distance,
             Command::Turn(degrees) => waypoint_pos.rotate(degrees),
         }
     }

@@ -20,10 +20,6 @@ impl<T: PrimInt + AddAssign> Vector2<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
-
-    pub fn move_by(&mut self, delta: Vector2<T>) {
-        *self += delta;
-    }
 }
 
 impl<T: PrimInt + Signed + AddAssign> Vector2<T> {
