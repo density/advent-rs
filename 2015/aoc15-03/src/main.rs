@@ -1,4 +1,4 @@
-use hymns::vec2d::Vec2D;
+use hymns::vector2::Vector2;
 use std::collections::HashSet;
 use std::mem;
 use std::time::Instant;
@@ -7,7 +7,7 @@ const INPUT: &str = include_str!("../input.txt");
 
 fn part1() -> usize {
     let mut seen = HashSet::new();
-    let mut coord = Vec2D::new(0i64, 0i64);
+    let mut coord = Vector2::new(0i64, 0i64);
 
     seen.insert(coord);
 
@@ -29,8 +29,8 @@ fn part1() -> usize {
 fn part2() -> usize {
     let mut seen = HashSet::new();
 
-    let mut coord_to_move = Vec2D::new(0i64, 0i64);
-    let mut other_coord = Vec2D::new(0i64, 0i64);
+    let mut coord_to_move = Vector2::new(0i64, 0i64);
+    let mut other_coord = Vector2::new(0i64, 0i64);
 
     seen.insert(coord_to_move);
 

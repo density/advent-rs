@@ -1,27 +1,27 @@
 use std::collections::{HashMap, HashSet};
 use std::time::Instant;
 
-use hymns::vec2d::Vec2D;
+use hymns::vector2::Vector2;
 
 const INPUT: &str = include_str!("../input.txt");
 
-fn calculate_coord(s: &str) -> Vec2D<i64> {
-    let mut current = Vec2D::default();
+fn calculate_coord(s: &str) -> Vector2<i64> {
+    let mut current = Vector2::default();
 
     let mut char_iter = s.chars();
 
     while let Some(cur) = char_iter.next() {
         let next_move = match cur {
-            'e' => Vec2D::new(1, 0),
-            'w' => Vec2D::new(-1, 0),
+            'e' => Vector2::new(1, 0),
+            'w' => Vector2::new(-1, 0),
             's' => match char_iter.next() {
-                Some('e') => Vec2D::new(0, 1),
-                Some('w') => Vec2D::new(-1, 1),
+                Some('e') => Vector2::new(0, 1),
+                Some('w') => Vector2::new(-1, 1),
                 _ => unreachable!(),
             },
             'n' => match char_iter.next() {
-                Some('e') => Vec2D::new(1, -1),
-                Some('w') => Vec2D::new(0, -1),
+                Some('e') => Vector2::new(1, -1),
+                Some('w') => Vector2::new(0, -1),
                 _ => unreachable!(),
             },
             _ => unreachable!(),
@@ -33,7 +33,7 @@ fn calculate_coord(s: &str) -> Vec2D<i64> {
     current
 }
 
-fn read_input() -> Vec<Vec2D<i64>> {
+fn read_input() -> Vec<Vector2<i64>> {
     INPUT.lines().map(|line| calculate_coord(line)).collect()
 }
 
@@ -52,13 +52,13 @@ fn part1() -> usize {
 }
 
 fn part2() -> usize {
-    let directions: [Vec2D<i64>; 6] = [
-        Vec2D::new(1, 0),
-        Vec2D::new(-1, 0),
-        Vec2D::new(0, 1),
-        Vec2D::new(-1, 1),
-        Vec2D::new(1, -1),
-        Vec2D::new(0, -1),
+    let directions: [Vector2<i64>; 6] = [
+        Vector2::new(1, 0),
+        Vector2::new(-1, 0),
+        Vector2::new(0, 1),
+        Vector2::new(-1, 1),
+        Vector2::new(1, -1),
+        Vector2::new(0, -1),
     ];
 
     let coords = read_input();
