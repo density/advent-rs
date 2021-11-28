@@ -78,7 +78,7 @@ version = "0.1.0"
 name = "aoc15-09"
 version = "0.1.0"
 dependencies = [
- "itertools 0.9.0",
+ "itertools",
 ]
 
 [[package]]
@@ -108,7 +108,7 @@ version = "0.1.0"
 name = "aoc20-06"
 version = "0.1.0"
 dependencies = [
- "itertools 0.9.0",
+ "itertools",
 ]
 
 [[package]]
@@ -170,7 +170,7 @@ dependencies = [
 name = "aoc20-17"
 version = "0.1.0"
 dependencies = [
- "itertools 0.9.0",
+ "itertools",
 ]
 
 [[package]]
@@ -302,7 +302,7 @@ dependencies = [
  "humantime",
  "ignore",
  "im-rc",
- "itertools 0.10.1",
+ "itertools",
  "jobserver",
  "lazy_static",
  "lazycell",
@@ -729,15 +729,6 @@ dependencies = [
  "sized-chunks",
  "typenum",
  "version_check",
-]
-
-[[package]]
-name = "itertools"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
-dependencies = [
- "either",
 ]
 
 [[package]]
