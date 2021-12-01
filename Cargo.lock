@@ -93,6 +93,13 @@ name = "aoc15-11"
 version = "0.1.0"
 
 [[package]]
+name = "aoc15-12"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+]
+
+[[package]]
 name = "aoc20-01"
 version = "0.1.0"
 
