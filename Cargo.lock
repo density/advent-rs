@@ -239,6 +239,10 @@ name = "aoc21-03"
 version = "0.1.0"
 
 [[package]]
+name = "aoc21-04"
+version = "0.1.0"
+
+[[package]]
 name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
