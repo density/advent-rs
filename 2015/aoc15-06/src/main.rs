@@ -24,12 +24,12 @@ fn part1() -> usize {
     let mut lights = vec![vec![false; 1000]; 1000];
 
     for (command, x1, y1, x2, y2) in read_input() {
-        for x in x1..=x2 {
-            for y in y1..=y2 {
-                lights[x][y] = match command.as_ref() {
+        for row in lights.iter_mut().take(x2 + 1).skip(x1) {
+            for light in row.iter_mut().take(y2 + 1).skip(y1) {
+                *light = match command.as_ref() {
                     "turn on" => true,
                     "turn off" => false,
-                    "toggle" => !lights[x][y],
+                    "toggle" => !*light,
                     _ => unreachable!(),
                 }
             }
@@ -44,11 +44,11 @@ fn part2() -> u64 {
 
     for (command, x1, y1, x2, y2) in read_input() {
         for light_row in lights.iter_mut().take(x2 + 1).skip(x1) {
-            for y in y1..=y2 {
+            for light in light_row.iter_mut().take(y2 + 1).skip(y1) {
                 match command.as_ref() {
-                    "turn on" => light_row[y] += 1,
-                    "turn off" => light_row[y] = light_row[y].saturating_sub(1),
-                    "toggle" => light_row[y] += 2,
+                    "turn on" => *light += 1,
+                    "turn off" => *light = light.saturating_sub(1),
+                    "toggle" => *light += 2,
                     _ => unreachable!(),
                 };
             }
