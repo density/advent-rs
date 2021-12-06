@@ -17,11 +17,8 @@ fn simulate(steps: usize) -> usize {
     }
 
     for _ in 0..steps {
-        let new_fish = fish[0];
-
         fish.rotate_left(1);
-        fish[6] += new_fish;
-        fish[8] = new_fish;
+        fish[6] += fish[8];
     }
 
     fish.iter().sum()
