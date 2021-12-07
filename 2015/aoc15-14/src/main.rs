@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::time::Instant;
 
@@ -116,12 +117,16 @@ fn part2() -> u64 {
 
             let distance = *locations.get(&reindeer.info.name).unwrap();
 
-            if distance > leader_distance {
-                leader_distance = distance;
-                current_leaders.clear();
-                current_leaders.push(reindeer.info.name.clone());
-            } else if distance == leader_distance {
-                current_leaders.push(reindeer.info.name.clone());
+            match distance.cmp(&leader_distance) {
+                Ordering::Less => (),
+                Ordering::Equal => {
+                    current_leaders.push(reindeer.info.name.clone());
+                }
+                Ordering::Greater => {
+                    leader_distance = distance;
+                    current_leaders.clear();
+                    current_leaders.push(reindeer.info.name.clone());
+                }
             }
         }
 

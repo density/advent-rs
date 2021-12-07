@@ -3,7 +3,7 @@ use std::time::Instant;
 
 use itertools::Itertools;
 
-const INPUT: &'static str = include_str!("../input.txt");
+const INPUT: &str = include_str!("../input.txt");
 
 fn build_happiness_map() -> HashMap<&'static str, HashMap<&'static str, i64>> {
     let mut happiness_map: HashMap<&'static str, HashMap<&'static str, i64>> = HashMap::new();
@@ -31,7 +31,7 @@ fn build_happiness_map() -> HashMap<&'static str, HashMap<&'static str, i64>> {
 fn part1() -> i64 {
     let happiness_map = build_happiness_map();
 
-    let mut person_count = happiness_map.len();
+    let person_count = happiness_map.len();
 
     let mut max_happiness = 0;
 
