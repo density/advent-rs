@@ -1,6 +1,5 @@
-use std::time::Instant;
-
 use hymns::input::parse_char_delimited_numbers;
+use hymns::runner::timed_run;
 
 const INPUT: &str = include_str!("../input.txt");
 
@@ -43,13 +42,8 @@ fn part2() -> i32 {
 }
 
 fn main() {
-    let start = Instant::now();
-    println!("part 1: {}", part1());
-    println!("part 1 took {}ms", (Instant::now() - start).as_millis());
-
-    let start = Instant::now();
-    println!("part 2: {}", part2());
-    println!("part 2 took {}ms", (Instant::now() - start).as_millis());
+    timed_run(1, part1);
+    timed_run(2, part2);
 }
 
 #[cfg(test)]

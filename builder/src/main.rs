@@ -1,5 +1,6 @@
 use std::env;
-use std::fs::{copy, File};
+use std::fs::{copy, File, OpenOptions};
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use cargo::ops::NewOptions;
@@ -10,8 +11,21 @@ fn main() {
     let (year, problem_number) = extract_args();
 
     let proj_dir = create_package(year, problem_number);
+    write_dependencies(&proj_dir);
     create_input_file(&proj_dir);
     copy_template(&proj_dir);
+}
+
+fn write_dependencies(proj_dir: &Path) {
+    let mut toml_path = PathBuf::from(proj_dir);
+    toml_path.push("Cargo.toml");
+
+    OpenOptions::new()
+        .append(true)
+        .open(&toml_path)
+        .expect("Couldn't find Cargo.toml")
+        .write_all("hymns = { path = \"../../hymns\" }".as_bytes())
+        .expect("Couldn't write to Cargo.toml.");
 }
 
 fn extract_args() -> (u8, u8) {
