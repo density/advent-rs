@@ -272,6 +272,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc21-08"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
 name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
