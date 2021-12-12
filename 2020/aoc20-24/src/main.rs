@@ -1,27 +1,27 @@
 use std::collections::{HashMap, HashSet};
 use std::time::Instant;
 
-use hymns::vector2::Vector2;
+use hymns::vector2::Point2;
 
 const INPUT: &str = include_str!("../input.txt");
 
-fn calculate_coord(s: &str) -> Vector2<i64> {
-    let mut current = Vector2::default();
+fn calculate_coord(s: &str) -> Point2<i64> {
+    let mut current = Point2::default();
 
     let mut char_iter = s.chars();
 
     while let Some(cur) = char_iter.next() {
         let next_move = match cur {
-            'e' => Vector2::new(1, 0),
-            'w' => Vector2::new(-1, 0),
+            'e' => Point2::new(1, 0),
+            'w' => Point2::new(-1, 0),
             's' => match char_iter.next() {
-                Some('e') => Vector2::new(0, 1),
-                Some('w') => Vector2::new(-1, 1),
+                Some('e') => Point2::new(0, 1),
+                Some('w') => Point2::new(-1, 1),
                 _ => unreachable!(),
             },
             'n' => match char_iter.next() {
-                Some('e') => Vector2::new(1, -1),
-                Some('w') => Vector2::new(0, -1),
+                Some('e') => Point2::new(1, -1),
+                Some('w') => Point2::new(0, -1),
                 _ => unreachable!(),
             },
             _ => unreachable!(),
@@ -33,7 +33,7 @@ fn calculate_coord(s: &str) -> Vector2<i64> {
     current
 }
 
-fn read_input() -> Vec<Vector2<i64>> {
+fn read_input() -> Vec<Point2<i64>> {
     INPUT.lines().map(|line| calculate_coord(line)).collect()
 }
 
@@ -52,13 +52,13 @@ fn part1() -> usize {
 }
 
 fn part2() -> usize {
-    let directions: [Vector2<i64>; 6] = [
-        Vector2::new(1, 0),
-        Vector2::new(-1, 0),
-        Vector2::new(0, 1),
-        Vector2::new(-1, 1),
-        Vector2::new(1, -1),
-        Vector2::new(0, -1),
+    let directions: [Point2<i64>; 6] = [
+        Point2::new(1, 0),
+        Point2::new(-1, 0),
+        Point2::new(0, 1),
+        Point2::new(-1, 1),
+        Point2::new(1, -1),
+        Point2::new(0, -1),
     ];
 
     let coords = read_input();

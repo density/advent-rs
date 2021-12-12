@@ -2,29 +2,29 @@ use std::collections::HashMap;
 use std::iter::empty;
 use std::time::Instant;
 
-use hymns::vector2::Vector2;
+use hymns::vector2::Point2;
 
 const INPUT: &str = include_str!("../input.txt");
 
-fn make_point(coord: &str) -> Vector2<i32> {
+fn make_point(coord: &str) -> Point2<i32> {
     let mut coords = coord.split(',').map(|c| c.parse().unwrap());
     let x: i32 = coords.next().unwrap();
     let y: i32 = coords.next().unwrap();
 
-    Vector2::new(x, y)
+    Point2::new(x, y)
 }
 
 fn generate_points_on_line_segment(
-    start: &Vector2<i32>,
-    end: &Vector2<i32>,
+    start: &Point2<i32>,
+    end: &Point2<i32>,
     include_diagonal: bool,
-) -> Box<dyn Iterator<Item = Vector2<i32>>> {
+) -> Box<dyn Iterator<Item = Point2<i32>>> {
     if start.x == end.x {
         let min_y = start.y.min(end.y);
         let max_y = start.y.max(end.y);
         let x = start.x;
 
-        Box::new((min_y..=max_y).map(move |y| Vector2::new(x, y)))
+        Box::new((min_y..=max_y).map(move |y| Point2::new(x, y)))
     } else {
         let m = (end.y - start.y) / (end.x - start.x);
 
@@ -40,7 +40,7 @@ fn generate_points_on_line_segment(
 
         let b = start.y - m * start.x;
 
-        Box::new(xrange.map(move |x| Vector2::new(x, m * x + b)))
+        Box::new(xrange.map(move |x| Point2::new(x, m * x + b)))
     }
 }
 

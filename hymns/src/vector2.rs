@@ -3,6 +3,13 @@ use std::ops::{Add, AddAssign, Mul};
 
 use num_traits::{PrimInt, Signed};
 
+#[macro_export]
+macro_rules! p2 {
+    ($x:expr, $y:expr) => {
+        Point2::new($x, $y)
+    };
+}
+
 #[derive(Copy, Clone)]
 pub enum Rotation {
     Right90,
@@ -11,18 +18,18 @@ pub enum Rotation {
 }
 
 #[derive(Debug, Eq, PartialEq, Hash, Default, Copy, Clone)]
-pub struct Vector2<T: PrimInt + AddAssign> {
+pub struct Point2<T: PrimInt + AddAssign> {
     pub x: T,
     pub y: T,
 }
 
-impl<T: PrimInt + AddAssign> Vector2<T> {
+impl<T: PrimInt + AddAssign> Point2<T> {
     pub fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 }
 
-impl<T: PrimInt + Signed + AddAssign> Vector2<T> {
+impl<T: PrimInt + Signed + AddAssign> Point2<T> {
     pub fn rotate(&mut self, degrees: Rotation) {
         match degrees {
             Rotation::Right90 => {
@@ -41,25 +48,35 @@ impl<T: PrimInt + Signed + AddAssign> Vector2<T> {
     }
 }
 
-impl<T: PrimInt + AddAssign> AddAssign<Vector2<T>> for Vector2<T> {
-    fn add_assign(&mut self, rhs: Vector2<T>) {
+impl<T: PrimInt + AddAssign> AddAssign<Point2<T>> for Point2<T> {
+    fn add_assign(&mut self, rhs: Point2<T>) {
         self.x += rhs.x;
         self.y += rhs.y;
     }
 }
 
-impl<T: PrimInt + AddAssign> Mul<T> for Vector2<T> {
-    type Output = Vector2<T>;
+impl<T: PrimInt + AddAssign> Mul<T> for Point2<T> {
+    type Output = Point2<T>;
 
     fn mul(self, rhs: T) -> Self::Output {
-        Vector2::new(self.x * rhs, self.y * rhs)
+        Point2::new(self.x * rhs, self.y * rhs)
     }
 }
 
-impl<T: PrimInt + AddAssign> Add<Vector2<T>> for Vector2<T> {
-    type Output = Vector2<T>;
+impl<T: PrimInt + AddAssign> Add<Point2<T>> for Point2<T> {
+    type Output = Point2<T>;
 
-    fn add(self, rhs: Vector2<T>) -> Self::Output {
-        Vector2::new(self.x + rhs.x, self.y + rhs.y)
+    fn add(self, rhs: Point2<T>) -> Self::Output {
+        Point2::new(self.x + rhs.x, self.y + rhs.y)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_macro() {
+        assert_eq!(p2!(10, 20), Point2::new(10, 20));
     }
 }

@@ -1,11 +1,11 @@
-use hymns::vector2::{Rotation, Vector2};
+use hymns::vector2::{Point2, Rotation};
 use std::time::Instant;
 
 const INPUT: &str = include_str!("../input.txt");
 
 #[derive(Copy, Clone)]
 enum Command {
-    Move(Vector2<i64>, i64),
+    Move(Point2<i64>, i64),
     Forward(i64),
     Turn(Rotation),
 }
@@ -16,10 +16,10 @@ fn read_commands() -> impl Iterator<Item = Command> {
         let amt: i64 = amt.parse().unwrap();
 
         match cmd_str {
-            "N" => Command::Move(Vector2::new(0, 1), amt),
-            "S" => Command::Move(Vector2::new(0, -1), amt),
-            "E" => Command::Move(Vector2::new(1, 0), amt),
-            "W" => Command::Move(Vector2::new(-1, 0), amt),
+            "N" => Command::Move(Point2::new(0, 1), amt),
+            "S" => Command::Move(Point2::new(0, -1), amt),
+            "E" => Command::Move(Point2::new(1, 0), amt),
+            "W" => Command::Move(Point2::new(-1, 0), amt),
             "R" => {
                 let rotation = match amt {
                     90 => Rotation::Right90,
@@ -45,8 +45,8 @@ fn read_commands() -> impl Iterator<Item = Command> {
 }
 
 fn part1() -> i64 {
-    let mut ship_pos = Vector2::default();
-    let mut ship_heading = Vector2::new(1, 0);
+    let mut ship_pos = Point2::default();
+    let mut ship_heading = Point2::new(1, 0);
 
     for command in read_commands() {
         match command {
@@ -60,8 +60,8 @@ fn part1() -> i64 {
 }
 
 fn part2() -> i64 {
-    let mut ship_pos = Vector2::default();
-    let mut waypoint_pos = Vector2::new(10, 1);
+    let mut ship_pos = Point2::default();
+    let mut waypoint_pos = Point2::new(10, 1);
 
     for command in read_commands() {
         match command {

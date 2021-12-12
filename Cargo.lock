@@ -279,6 +279,64 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc21-09"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
+name = "aoc21-10"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
+name = "aoc21-11"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
+name = "aoc21-12"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+ "itertools",
+]
+
+[[package]]
+name = "aoc21-13"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
+name = "aoc21-14"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
+name = "aoc21-15"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
+name = "aoc21-16"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+ "nom",
+]
+
+[[package]]
 name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -917,6 +975,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "308cc39be01b73d0d18f82a0e7b2a3df85245f84af96fdddc5d202d27e47b86a"
 
 [[package]]
+name = "minimal-lexical"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
+
+[[package]]
 name = "miniz_oxide"
 version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -933,6 +997,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9f1c5b025cda876f66ef43a113f91ebc9f4ccef34843000e0adf6ebbab84e21"
 dependencies = [
  "winapi",
+]
+
+[[package]]
+name = "nom"
+version = "7.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1b1d11e1ef389c76fe5b81bcaf2ea32cf88b62bc494e19f493d0b30e7a930109"
+dependencies = [
+ "memchr",
+ "minimal-lexical",
+ "version_check",
 ]
 
 [[package]]
