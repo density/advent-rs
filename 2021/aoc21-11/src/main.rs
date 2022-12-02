@@ -18,13 +18,13 @@ fn step(grid: &mut Grid<u8>) -> usize {
 
         for (point, energy) in grid.iter_points_values() {
             if energy > 9 && !flash_points.contains(&point) {
-                flash_points.insert(point.clone());
-                flashed_or_affected_points.push(point.clone());
+                flash_points.insert(point);
+                flashed_or_affected_points.push(point);
                 flashed_or_affected_points.extend(grid.neighbor_coords(&point, true));
             }
         }
 
-        if flashed_or_affected_points.len() == 0 {
+        if flashed_or_affected_points.is_empty() {
             break;
         }
 
@@ -65,8 +65,7 @@ fn part2() -> usize {
     let mut grid = build_grid();
 
     (1..)
-        .skip_while(|_| step(&mut grid) < grid.rows() * grid.cols())
-        .next()
+        .find(|_| step(&mut grid) >= grid.rows() * grid.cols())
         .unwrap()
 }
 

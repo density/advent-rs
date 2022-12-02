@@ -4,8 +4,6 @@ use hymns::vector2::Point2;
 use std::collections::HashSet;
 use std::ops::RangeInclusive;
 
-const INPUT: &str = include_str!("../input.txt");
-
 type Point = Point2<isize>;
 type Velocity = Point2<isize>;
 

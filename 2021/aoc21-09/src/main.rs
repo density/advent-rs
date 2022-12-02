@@ -29,7 +29,7 @@ fn trace_basin(grid: &Grid<u8>, start: &Point) -> usize {
     let mut seen = HashSet::new();
 
     let mut frontier = VecDeque::new();
-    frontier.push_front(start.clone());
+    frontier.push_front(*start);
 
     while let Some(current) = frontier.pop_front() {
         seen.insert(current);
@@ -73,7 +73,7 @@ fn part2() -> usize {
 
     for p in find_low_points(&grid) {
         let mut seen = HashSet::new();
-        seen.insert(p.clone());
+        seen.insert(p);
 
         sizes.push(trace_basin(&grid, &p));
     }

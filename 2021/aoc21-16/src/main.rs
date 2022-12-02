@@ -190,27 +190,15 @@ fn calc_packet_value(packet: &Packet) -> u64 {
             }
             5 => {
                 debug_assert!(sub_packets.len() == 2);
-                if calc_packet_value(&sub_packets[0]) > calc_packet_value(&sub_packets[1]) {
-                    1
-                } else {
-                    0
-                }
+                u64::from(calc_packet_value(&sub_packets[0]) > calc_packet_value(&sub_packets[1]))
             }
             6 => {
                 debug_assert!(sub_packets.len() == 2);
-                if calc_packet_value(&sub_packets[0]) < calc_packet_value(&sub_packets[1]) {
-                    1
-                } else {
-                    0
-                }
+                u64::from(calc_packet_value(&sub_packets[0]) < calc_packet_value(&sub_packets[1]))
             }
             7 => {
                 debug_assert!(sub_packets.len() == 2);
-                if calc_packet_value(&sub_packets[0]) == calc_packet_value(&sub_packets[1]) {
-                    1
-                } else {
-                    0
-                }
+                u64::from(calc_packet_value(&sub_packets[0]) == calc_packet_value(&sub_packets[1]))
             }
             _ => unreachable!(),
         },

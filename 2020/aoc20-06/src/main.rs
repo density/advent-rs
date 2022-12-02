@@ -1,4 +1,3 @@
-use itertools::Itertools;
 use std::collections::HashSet;
 use std::convert::TryFrom;
 
@@ -28,7 +27,7 @@ fn part2() -> u64 {
                 answers
                     .lines()
                     .map(|line| line.chars().collect::<HashSet<_>>())
-                    .fold1(|seen, next| seen.intersection(&next).cloned().collect())
+                    .reduce(|seen, next| seen.intersection(&next).cloned().collect())
                     .unwrap()
                     .len(),
             )

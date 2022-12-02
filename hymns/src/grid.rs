@@ -37,9 +37,7 @@ impl<T: PrimInt> Grid<T> {
     }
 
     pub fn iter_points(&self) -> impl Iterator<Item = Point2<usize>> + '_ {
-        (0..self.rows())
-            .map(|x| (0..self.cols()).map(move |y| p2!(x, y)))
-            .flatten()
+        (0..self.rows()).flat_map(|x| (0..self.cols()).map(move |y| p2!(x, y)))
     }
 
     pub fn iter_points_values(&self) -> impl Iterator<Item = (Point2<usize>, T)> + '_ {

@@ -34,7 +34,7 @@ fn calculate_coord(s: &str) -> Point2<i64> {
 }
 
 fn read_input() -> Vec<Point2<i64>> {
-    INPUT.lines().map(|line| calculate_coord(line)).collect()
+    INPUT.lines().map(calculate_coord).collect()
 }
 
 fn part1() -> usize {
