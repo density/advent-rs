@@ -95,7 +95,7 @@ mod tests {
             vec![10, 11, 12, 13, 14],
         ];
 
-        let g = Grid::new(data.clone());
+        let g = Grid::new(data);
 
         assert_eq!(g.rows(), 3);
         assert_eq!(g.cols(), 5);
@@ -116,7 +116,7 @@ mod tests {
             vec![10, 11, 12, 13, 14],
         ];
 
-        let g = Grid::new(data.clone());
+        let g = Grid::new(data);
 
         // corners without diagonals
         assert_eq!(

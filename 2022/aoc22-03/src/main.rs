@@ -19,7 +19,7 @@ fn part1() -> u64 {
         let mid = rucksack.len() / 2;
 
         let first_half: HashSet<u8> = HashSet::from_iter(rucksack[..mid].iter().cloned());
-        let second_half: HashSet<u8> = HashSet::from_iter(rucksack[mid..].into_iter().cloned());
+        let second_half: HashSet<u8> = HashSet::from_iter(rucksack[mid..].iter().cloned());
 
         let common_element = first_half.intersection(&second_half).next().unwrap();
 
@@ -42,8 +42,7 @@ fn part2() -> u64 {
 
         let common = sets[0]
             .iter()
-            .filter(|c| sets[1].contains(&c) && sets[2].contains(&c))
-            .next()
+            .find(|c| sets[1].contains(c) && sets[2].contains(c))
             .unwrap();
 
         score += priority(*common);
