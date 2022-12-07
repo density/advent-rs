@@ -7,5 +7,3 @@ edition = "2021"
 
 [dependencies]
 hymns = { path = "../../hymns" }
-regex = "1"
-itertools = "~0.10"
