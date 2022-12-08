@@ -389,8 +389,6 @@ name = "aoc22-07"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools",
- "regex",
 ]
 
 [[package]]
