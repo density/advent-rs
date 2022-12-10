@@ -71,6 +71,32 @@ impl<T: PrimInt + AddAssign> Add<Point2<T>> for Point2<T> {
     }
 }
 
+impl<T: PrimInt + AddAssign> Point2<T> {
+    pub fn manhattan_dist(&self, other: &Point2<T>) -> T {
+        self.x.max(other.x) - self.x.min(other.x) + self.y.max(other.y) - self.y.min(other.y)
+    }
+
+    fn neighbors(&self) -> Vec<Point2<T>> {
+        vec![
+            Point2::new(self.x - T::one(), self.y),
+            Point2::new(self.x + T::one(), self.y),
+            Point2::new(self.x, self.y - T::one()),
+            Point2::new(self.x, self.y + T::one()),
+        ]
+    }
+
+    fn extended_neighbors(&self) -> Vec<Point2<T>> {
+        let mut neighbors = self.neighbors();
+        neighbors.append(&mut vec![
+            Point2::new(self.x - T::one(), self.y - T::one()),
+            Point2::new(self.x - T::one(), self.y + T::one()),
+            Point2::new(self.x + T::one(), self.y - T::one()),
+            Point2::new(self.x + T::one(), self.y + T::one()),
+        ]);
+        neighbors
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -78,5 +104,43 @@ mod tests {
     #[test]
     fn test_macro() {
         assert_eq!(p2!(10, 20), Point2::new(10, 20));
+    }
+
+    #[test]
+    fn test_manhattan() {
+        let p1: Point2<i64> = Point2::default();
+
+        assert_eq!(p1.manhattan_dist(&Point2::default()), 0);
+        assert_eq!(p2!(3, 5).manhattan_dist(&Point2::default()), 8);
+        assert_eq!(p2!(-3, -5).manhattan_dist(&Point2::default()), 8);
+    }
+
+    #[test]
+    fn test_neighbors() {
+        let p = Point2::default();
+
+        assert_eq!(
+            p.neighbors(),
+            vec![p2!(-1, 0), p2!(1, 0), p2!(0, -1), p2!(0, 1),]
+        )
+    }
+
+    #[test]
+    fn test_extended_neighbors() {
+        let p = Point2::default();
+
+        assert_eq!(
+            p.extended_neighbors(),
+            vec![
+                p2!(-1, 0),
+                p2!(1, 0),
+                p2!(0, -1),
+                p2!(0, 1),
+                p2!(-1, -1),
+                p2!(-1, 1),
+                p2!(1, -1),
+                p2!(1, 1),
+            ]
+        )
     }
 }
