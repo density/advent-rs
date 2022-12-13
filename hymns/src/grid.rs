@@ -56,29 +56,9 @@ impl<T: PrimInt> Grid<T> {
         self.elems[p.x][p.y] = val;
     }
 
-    pub fn neighbor_coords(&self, p: &Point2<usize>, include_diagonal: bool) -> Vec<Point2<usize>> {
-        let mut neighbors = vec![];
-
-        let mut offsets: Vec<(i8, i8)> = vec![(-1, 0), (0, -1), (1, 0), (0, 1)];
-        if include_diagonal {
-            offsets.extend([(-1, -1), (1, 1), (-1, 1), (1, -1)].into_iter());
-        }
-
-        for (dx, dy) in offsets {
-            let is_invalid = (dx == -1 && p.x == 0)
-                || (dy == -1 && p.y == 0)
-                || (dx == 1 && p.x == self.rows() - 1)
-                || (dy == 1 && p.y == self.cols() - 1);
-
-            if !is_invalid {
-                let new_x = if dx == -1 { p.x - 1 } else { p.x + dx as usize };
-
-                let new_y = if dy == -1 { p.y - 1 } else { p.y + dy as usize };
-
-                neighbors.push(p2!(new_x, new_y));
-            }
-        }
-
+    pub fn neighbor_coords(&self, p: &Point2<usize>, extended: bool) -> Vec<Point2<usize>> {
+        let mut neighbors = p.neighbors(extended);
+        neighbors.retain(|p| p.x < self.rows() && p.y < self.cols());
         neighbors
     }
 }
@@ -106,74 +86,6 @@ mod tests {
         let mut g = g;
         g.set_value(&p2!(1, 1), 999);
         assert_eq!(g.get_value(&p2!(1, 1)), 999);
-    }
-
-    #[test]
-    fn test_neighbors() {
-        let data = vec![
-            vec![0, 1, 2, 3, 4],
-            vec![5, 6, 7, 8, 9],
-            vec![10, 11, 12, 13, 14],
-        ];
-
-        let g = Grid::new(data);
-
-        // corners without diagonals
-        assert_eq!(
-            g.neighbor_coords(&p2!(0, 0), false),
-            vec![p2!(1, 0), p2!(0, 1)]
-        );
-        assert_eq!(
-            g.neighbor_coords(&p2!(0, 4), false),
-            vec![p2!(0, 3), p2!(1, 4)]
-        );
-        assert_eq!(
-            g.neighbor_coords(&p2!(2, 0), false),
-            vec![p2!(1, 0), p2!(2, 1)]
-        );
-        assert_eq!(
-            g.neighbor_coords(&p2!(2, 4), false),
-            vec![p2!(1, 4), p2!(2, 3)]
-        );
-
-        // corners with diagonals
-        assert_eq!(
-            g.neighbor_coords(&p2!(0, 0), true),
-            vec![p2!(1, 0), p2!(0, 1), p2!(1, 1)]
-        );
-        assert_eq!(
-            g.neighbor_coords(&p2!(0, 4), true),
-            vec![p2!(0, 3), p2!(1, 4), p2!(1, 3)]
-        );
-        assert_eq!(
-            g.neighbor_coords(&p2!(2, 0), true),
-            vec![p2!(1, 0), p2!(2, 1), p2!(1, 1)]
-        );
-        assert_eq!(
-            g.neighbor_coords(&p2!(2, 4), true),
-            vec![p2!(1, 4), p2!(2, 3), p2!(1, 3)]
-        );
-
-        // non-corner without diagonals
-        assert_eq!(
-            g.neighbor_coords(&p2!(1, 1), false),
-            vec![p2!(0, 1), p2!(1, 0), p2!(2, 1), p2!(1, 2)]
-        );
-
-        // non-corner with diagonals
-        assert_eq!(
-            g.neighbor_coords(&p2!(1, 1), true),
-            vec![
-                p2!(0, 1),
-                p2!(1, 0),
-                p2!(2, 1),
-                p2!(1, 2),
-                p2!(0, 0),
-                p2!(2, 2),
-                p2!(0, 2),
-                p2!(2, 0)
-            ]
-        );
     }
 
     #[test]

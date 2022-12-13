@@ -76,24 +76,55 @@ impl<T: PrimInt + AddAssign> Point2<T> {
         self.x.max(other.x) - self.x.min(other.x) + self.y.max(other.y) - self.y.min(other.y)
     }
 
-    fn neighbors(&self) -> Vec<Point2<T>> {
-        vec![
+    pub fn neighbors(&self, extended: bool) -> Vec<Point2<T>> {
+        let mut neighbors = vec![
             Point2::new(self.x - T::one(), self.y),
             Point2::new(self.x + T::one(), self.y),
             Point2::new(self.x, self.y - T::one()),
             Point2::new(self.x, self.y + T::one()),
-        ]
+        ];
+
+        if extended {
+            neighbors.append(&mut vec![
+                Point2::new(self.x - T::one(), self.y - T::one()),
+                Point2::new(self.x - T::one(), self.y + T::one()),
+                Point2::new(self.x + T::one(), self.y - T::one()),
+                Point2::new(self.x + T::one(), self.y + T::one()),
+            ]);
+        }
+
+        neighbors
     }
 
-    fn extended_neighbors(&self) -> Vec<Point2<T>> {
-        let mut neighbors = self.neighbors();
-        neighbors.append(&mut vec![
-            Point2::new(self.x - T::one(), self.y - T::one()),
-            Point2::new(self.x - T::one(), self.y + T::one()),
-            Point2::new(self.x + T::one(), self.y - T::one()),
-            Point2::new(self.x + T::one(), self.y + T::one()),
-        ]);
+    pub fn unsigned_neighbors(&self, extended: bool) -> Vec<Point2<T>> {
+        let x_minus_one = self.x.checked_sub(&T::one());
+        let y_minus_one = self.y.checked_sub(&T::one());
+        let x_plus_one = Some(self.x + T::one());
+        let y_plus_one = Some(self.y + T::one());
+
+        let mut neighbors = vec![
+            (x_minus_one, Some(self.y)),
+            ((x_plus_one), Some(self.y)),
+            (Some(self.x), y_minus_one),
+            (Some(self.x), y_plus_one),
+        ];
+
+        if extended {
+            neighbors.extend(vec![
+                (x_minus_one, y_minus_one),
+                (x_minus_one, y_plus_one),
+                (x_plus_one, y_minus_one),
+                (x_plus_one, y_plus_one),
+            ])
+        }
+
         neighbors
+            .into_iter()
+            .filter_map(|(x, y)| match (x, y) {
+                (Some(x), Some(y)) => Some(p2!(x, y)),
+                _ => None,
+            })
+            .collect()
     }
 }
 
@@ -120,9 +151,27 @@ mod tests {
         let p = Point2::default();
 
         assert_eq!(
-            p.neighbors(),
+            p.neighbors(false),
             vec![p2!(-1, 0), p2!(1, 0), p2!(0, -1), p2!(0, 1),]
-        )
+        );
+
+        let p = p2!(1, 1);
+
+        assert_eq!(
+            p.neighbors(false),
+            vec![p2!(0, 1), p2!(2, 1), p2!(1, 0), p2!(1, 2)]
+        );
+    }
+
+    #[test]
+    fn test_unsigned_neighbors() {
+        let p: Point2<usize> = Point2::default();
+
+        assert_eq!(p.unsigned_neighbors(false), vec![p2!(1, 0), p2!(0, 1),]);
+
+        let p = p2!(1, 1);
+
+        assert_eq!(p.unsigned_neighbors(false), p.neighbors(false));
     }
 
     #[test]
@@ -130,7 +179,7 @@ mod tests {
         let p = Point2::default();
 
         assert_eq!(
-            p.extended_neighbors(),
+            p.neighbors(true),
             vec![
                 p2!(-1, 0),
                 p2!(1, 0),
@@ -141,6 +190,36 @@ mod tests {
                 p2!(1, -1),
                 p2!(1, 1),
             ]
+        );
+
+        let p = p2!(1, 1);
+
+        assert_eq!(
+            p.neighbors(true),
+            vec![
+                p2!(0, 1),
+                p2!(2, 1),
+                p2!(1, 0),
+                p2!(1, 2),
+                p2!(0, 0),
+                p2!(0, 2),
+                p2!(2, 0),
+                p2!(2, 2),
+            ]
         )
+    }
+
+    #[test]
+    fn test_unsigned_extended_neighbors() {
+        let p: Point2<usize> = Point2::default();
+
+        assert_eq!(
+            p.unsigned_neighbors(true),
+            vec![p2!(1, 0), p2!(0, 1), p2!(1, 1),]
+        );
+
+        let p: Point2<usize> = p2!(1, 1);
+
+        assert_eq!(p.unsigned_neighbors(true), p.neighbors(true),)
     }
 }
