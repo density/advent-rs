@@ -57,7 +57,7 @@ impl<T: PrimInt> Grid<T> {
     }
 
     pub fn neighbor_coords(&self, p: &Point2<usize>, extended: bool) -> Vec<Point2<usize>> {
-        let mut neighbors = p.neighbors(extended);
+        let mut neighbors = p.unsigned_neighbors(extended);
         neighbors.retain(|p| p.x < self.rows() && p.y < self.cols());
         neighbors
     }
