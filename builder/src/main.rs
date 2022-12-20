@@ -80,7 +80,7 @@ fn create_package(year: u8, problem_number: u8) -> PathBuf {
 
 fn create_input_file(proj_dir: &Path) {
     let input_file: PathBuf = [proj_dir.to_str().unwrap(), "input.txt"].iter().collect();
-    File::create(&input_file).expect("Could not create input file.");
+    File::create(input_file).expect("Could not create input file.");
 }
 
 fn copy_template(proj_dir: &Path) {
@@ -88,5 +88,5 @@ fn copy_template(proj_dir: &Path) {
     let dst: PathBuf = [proj_dir.to_str().unwrap(), "src", "main.rs"]
         .iter()
         .collect();
-    copy(&src, &dst).expect("Could not copy template.");
+    copy(src, dst).expect("Could not copy template.");
 }

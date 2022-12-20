@@ -19,11 +19,7 @@ fn read_input() -> (Vec<u32>, impl Iterator<Item = u32>) {
 }
 
 fn most_common(nums: &[u32], mask: u32) -> u32 {
-    if nums.iter().filter(|&&n| n & mask == 0).count() > nums.len() / 2 {
-        0
-    } else {
-        1
-    }
+    u32::from(nums.iter().filter(|&&n| n & mask == 0).count() <= nums.len() / 2)
 }
 
 fn part1() -> u32 {
