@@ -77,12 +77,14 @@ impl<T: PrimInt + AddAssign> Point2<T> {
     }
 
     pub fn neighbors(&self, extended: bool) -> Vec<Point2<T>> {
-        let mut neighbors = vec![
+        let mut neighbors = Vec::with_capacity(if extended { 8 } else { 4 });
+
+        neighbors.append(&mut vec![
             Point2::new(self.x - T::one(), self.y),
             Point2::new(self.x + T::one(), self.y),
             Point2::new(self.x, self.y - T::one()),
             Point2::new(self.x, self.y + T::one()),
-        ];
+        ]);
 
         if extended {
             neighbors.append(&mut vec![
