@@ -484,6 +484,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc22-19"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+ "regex",
+]
+
+[[package]]
 name = "aoc22-20"
 version = "0.1.0"
 dependencies = [
