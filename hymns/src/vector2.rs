@@ -76,7 +76,7 @@ impl<T: PrimInt + AddAssign> Point2<T> {
         self.x.max(other.x) - self.x.min(other.x) + self.y.max(other.y) - self.y.min(other.y)
     }
 
-    pub fn neighbors(&self, extended: bool) -> Vec<Point2<T>> {
+    pub fn neighbors(&self, extended: bool, include_self: bool) -> Vec<Point2<T>> {
         let mut neighbors = Vec::with_capacity(if extended { 8 } else { 4 });
 
         neighbors.append(&mut vec![
@@ -95,10 +95,14 @@ impl<T: PrimInt + AddAssign> Point2<T> {
             ]);
         }
 
+        if include_self {
+            neighbors.push(*self);
+        }
+
         neighbors
     }
 
-    pub fn unsigned_neighbors(&self, extended: bool) -> Vec<Point2<T>> {
+    pub fn unsigned_neighbors(&self, extended: bool, include_self: bool) -> Vec<Point2<T>> {
         let x_minus_one = self.x.checked_sub(&T::one());
         let y_minus_one = self.y.checked_sub(&T::one());
         let x_plus_one = Some(self.x + T::one());
@@ -118,6 +122,10 @@ impl<T: PrimInt + AddAssign> Point2<T> {
                 (x_plus_one, y_minus_one),
                 (x_plus_one, y_plus_one),
             ])
+        }
+
+        if include_self {
+            neighbors.push((Some(self.x), Some(self.y)));
         }
 
         neighbors
@@ -153,15 +161,22 @@ mod tests {
         let p = Point2::default();
 
         assert_eq!(
-            p.neighbors(false),
+            p.neighbors(false, false),
             vec![p2!(-1, 0), p2!(1, 0), p2!(0, -1), p2!(0, 1),]
         );
 
         let p = p2!(1, 1);
 
         assert_eq!(
-            p.neighbors(false),
+            p.neighbors(false, false),
             vec![p2!(0, 1), p2!(2, 1), p2!(1, 0), p2!(1, 2)]
+        );
+
+        let p = p2!(1, 1);
+
+        assert_eq!(
+            p.neighbors(false, true),
+            vec![p2!(0, 1), p2!(2, 1), p2!(1, 0), p2!(1, 2), p2!(1, 1)]
         );
     }
 
@@ -169,11 +184,17 @@ mod tests {
     fn test_unsigned_neighbors() {
         let p: Point2<usize> = Point2::default();
 
-        assert_eq!(p.unsigned_neighbors(false), vec![p2!(1, 0), p2!(0, 1),]);
+        assert_eq!(
+            p.unsigned_neighbors(false, false),
+            vec![p2!(1, 0), p2!(0, 1),]
+        );
 
         let p = p2!(1, 1);
 
-        assert_eq!(p.unsigned_neighbors(false), p.neighbors(false));
+        assert_eq!(
+            p.unsigned_neighbors(false, false),
+            p.neighbors(false, false)
+        );
     }
 
     #[test]
@@ -181,7 +202,7 @@ mod tests {
         let p = Point2::default();
 
         assert_eq!(
-            p.neighbors(true),
+            p.neighbors(true, false),
             vec![
                 p2!(-1, 0),
                 p2!(1, 0),
@@ -197,7 +218,7 @@ mod tests {
         let p = p2!(1, 1);
 
         assert_eq!(
-            p.neighbors(true),
+            p.neighbors(true, false),
             vec![
                 p2!(0, 1),
                 p2!(2, 1),
@@ -216,12 +237,16 @@ mod tests {
         let p: Point2<usize> = Point2::default();
 
         assert_eq!(
-            p.unsigned_neighbors(true),
+            p.unsigned_neighbors(true, false),
             vec![p2!(1, 0), p2!(0, 1), p2!(1, 1),]
         );
 
         let p: Point2<usize> = p2!(1, 1);
 
-        assert_eq!(p.unsigned_neighbors(true), p.neighbors(true),)
+        assert_eq!(p.unsigned_neighbors(true, false), p.neighbors(true, false));
+
+        let p: Point2<usize> = p2!(1, 1);
+
+        assert_eq!(p.unsigned_neighbors(true, true), p.neighbors(true, true));
     }
 }

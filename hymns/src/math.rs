@@ -12,7 +12,6 @@ pub fn extended_euclidean<T: PrimInt>(a: T, b: T) -> (T, T, T) {
     }
 }
 
-
 pub fn modular_inverse<T: PrimInt>(x: T, n: T) -> Option<T> {
     let (gcd, x, _) = extended_euclidean(x, n);
     if gcd.is_one() {

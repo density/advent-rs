@@ -137,7 +137,7 @@ impl Valley {
 
     fn moves_at_timestamp(&self, ts: Timestamp, from_location: Point) -> Vec<Point> {
         let ts = ts % self.states.len();
-        let mut result = from_location.unsigned_neighbors(false);
+        let mut result = from_location.unsigned_neighbors(false, true);
 
         result.retain(|p| {
             *p == self.start
@@ -146,10 +146,6 @@ impl Valley {
                     && (1..self.max_y).contains(&p.y)
                     && !self.states[&ts].contains(p))
         });
-
-        if !self.states[&ts].contains(&from_location) {
-            result.push(from_location);
-        }
 
         result
     }
