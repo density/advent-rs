@@ -44,6 +44,10 @@ impl<T: Clone + Eq + Hash> Counter<T> {
     pub fn into_counts(self) -> impl Iterator<Item = usize> {
         self.counts.into_values()
     }
+
+    pub fn get(&self, k: &T) -> Option<usize> {
+        self.counts.get(k).cloned()
+    }
 }
 
 impl<T: Clone + Eq + Hash> FromIterator<T> for Counter<T> {

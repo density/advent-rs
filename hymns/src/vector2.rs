@@ -24,7 +24,7 @@ pub struct Point2<T: PrimInt + AddAssign> {
 }
 
 impl<T: PrimInt + AddAssign> Point2<T> {
-    pub fn new(x: T, y: T) -> Self {
+    pub const fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
 }
