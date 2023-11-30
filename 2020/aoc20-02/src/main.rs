@@ -15,7 +15,7 @@ fn spec_iter() -> impl Iterator<Item = (usize, usize, char, String)> {
     )
     .unwrap();
 
-    INPUT.lines().into_iter().map(move |spec| {
+    INPUT.lines().map(move |spec| {
         let cap = re.captures(spec).unwrap();
 
         let min: usize = cap["min"].parse().unwrap();

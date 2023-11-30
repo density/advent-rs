@@ -7,14 +7,10 @@ fn part1() -> u64 {
     let mut have: HashSet<u64> = HashSet::new();
     let mut need: Vec<u64> = Vec::new();
 
-    INPUT
-        .lines()
-        .into_iter()
-        .filter_map(|n| n.parse().ok())
-        .for_each(|n| {
-            have.insert(n);
-            need.push(2020 - n);
-        });
+    INPUT.lines().filter_map(|n| n.parse().ok()).for_each(|n| {
+        have.insert(n);
+        need.push(2020 - n);
+    });
 
     need.into_iter()
         .find_map(|n| {
@@ -28,11 +24,7 @@ fn part1() -> u64 {
 }
 
 fn part2() -> u64 {
-    let mut nums: Vec<u64> = INPUT
-        .lines()
-        .into_iter()
-        .filter_map(|n| n.parse().ok())
-        .collect();
+    let mut nums: Vec<u64> = INPUT.lines().filter_map(|n| n.parse().ok()).collect();
     nums.sort_unstable();
 
     for i in 0..nums.len() {

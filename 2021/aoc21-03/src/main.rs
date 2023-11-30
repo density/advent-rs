@@ -10,10 +10,7 @@ fn read_input() -> (Vec<u32>, impl Iterator<Item = u32>) {
         .map(|line| u32::from_str_radix(line, 2).unwrap())
         .collect();
 
-    let masks = (0..bit_length)
-        .into_iter()
-        .rev()
-        .map(|i| (1 << i).try_into().unwrap());
+    let masks = (0..bit_length).rev().map(|i| (1 << i).try_into().unwrap());
 
     (nums, masks)
 }

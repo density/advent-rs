@@ -6,8 +6,8 @@ use std::cmp::Ordering;
 pub struct AllEqual<T>(pub T);
 
 impl<T: Eq> PartialOrd for AllEqual<T> {
-    fn partial_cmp(&self, _: &Self) -> Option<Ordering> {
-        Some(Ordering::Equal)
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
     }
 }
 

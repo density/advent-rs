@@ -95,7 +95,7 @@ fn part2() -> usize {
     elements.sort();
 
     (1..)
-        .zip(elements.into_iter())
+        .zip(elements)
         .filter_map(|(i, element)| {
             if element == divider2 || element == divider6 {
                 Some(i)

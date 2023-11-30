@@ -193,7 +193,7 @@ fn part1() -> usize {
         for edge in tile.all_edges() {
             border_to_tile_map
                 .entry(edge.clone())
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(tile.id);
         }
     }
@@ -223,7 +223,7 @@ fn find_top_left(tiles: &mut [Tile]) -> usize {
         for edge in tile.all_edges() {
             border_to_tile_map
                 .entry(edge.clone())
-                .or_insert_with(Vec::new)
+                .or_default()
                 .push(tile.id);
         }
     }
