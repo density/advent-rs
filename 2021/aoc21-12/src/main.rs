@@ -75,8 +75,8 @@ fn build_graph() -> Graph {
         let begin: Cave = comps.next().unwrap().try_into().unwrap();
         let end: Cave = comps.next().unwrap().try_into().unwrap();
 
-        graph.entry(begin).or_insert_with(Vec::new).push(end);
-        graph.entry(end).or_insert_with(Vec::new).push(begin);
+        graph.entry(begin).or_default().push(end);
+        graph.entry(end).or_default().push(begin);
     }
 
     graph

@@ -21,7 +21,7 @@ fn part1() -> u64 {
 }
 
 fn ribbon_length(dims: Vec<u64>) -> u64 {
-    let perimeters = vec![
+    let perimeters = [
         dims[0] * 2 + dims[1] * 2,
         dims[1] * 2 + dims[2] * 2,
         dims[2] * 2 + dims[0] * 2,

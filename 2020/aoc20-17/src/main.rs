@@ -82,7 +82,7 @@ impl Simulation {
         for coord in to_remove {
             self.state.remove(&coord);
         }
-        self.state.extend(to_insert.into_iter());
+        self.state.extend(to_insert);
     }
 }
 

@@ -65,7 +65,7 @@ struct State {
     bank: HashMap<Resource, u64>,
 }
 
-#[allow(clippy::derive_hash_xor_eq)]
+#[allow(clippy::derived_hash_with_manual_eq)]
 impl Hash for State {
     fn hash<H: Hasher>(&self, state: &mut H) {
         for resource in ALL_RESOURCES {

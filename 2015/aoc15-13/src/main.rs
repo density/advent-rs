@@ -21,7 +21,7 @@ fn build_happiness_map() -> HashMap<&'static str, HashMap<&'static str, i64>> {
 
         happiness_map
             .entry(recipient)
-            .or_insert_with(HashMap::new)
+            .or_default()
             .insert(giver, amount);
     }
 
