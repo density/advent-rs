@@ -7,6 +7,10 @@ use cargo::ops::NewOptions;
 use cargo::ops::VersionControl::NoVcs;
 use cargo::Config;
 
+const DEFAULT_DEPS: &str = r#"hymns = { path = "../../hymns" }
+itertools = "0"
+regex = "1""#;
+
 fn main() {
     let (year, problem_number) = extract_args();
 
@@ -24,7 +28,7 @@ fn write_dependencies(proj_dir: &Path) {
         .append(true)
         .open(&toml_path)
         .expect("Couldn't find Cargo.toml")
-        .write_all("hymns = { path = \"../../hymns\" }".as_bytes())
+        .write_all(DEFAULT_DEPS.as_bytes())
         .expect("Couldn't write to Cargo.toml.");
 }
 
