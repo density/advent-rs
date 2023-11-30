@@ -8,5 +8,5 @@ edition = "2021"
 [dependencies]
 hymns = { path = "../../hymns" }
 nom = "7"
-itertools = "~0.10"
+itertools = "0"
 
