@@ -117,14 +117,14 @@ version = "0.1.0"
 name = "aoc15-09"
 version = "0.1.0"
 dependencies = [
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
 name = "aoc15-10"
 version = "0.1.0"
 dependencies = [
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -142,7 +142,7 @@ dependencies = [
 name = "aoc15-13"
 version = "0.1.0"
 dependencies = [
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -183,7 +183,7 @@ version = "0.1.0"
 name = "aoc20-06"
 version = "0.1.0"
 dependencies = [
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -245,7 +245,7 @@ dependencies = [
 name = "aoc20-17"
 version = "0.1.0"
 dependencies = [
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -350,7 +350,7 @@ name = "aoc21-12"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -488,7 +488,7 @@ name = "aoc22-13"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools",
+ "itertools 0.12.0",
  "nom",
 ]
 
@@ -497,7 +497,7 @@ name = "aoc22-14"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -528,7 +528,7 @@ name = "aoc22-18"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -573,6 +573,15 @@ name = "aoc22-25"
 version = "0.1.0"
 dependencies = [
  "hymns",
+]
+
+[[package]]
+name = "aoc23-01"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+ "itertools 0.12.0",
+ "regex",
 ]
 
 [[package]]
@@ -723,7 +732,7 @@ dependencies = [
  "ignore",
  "im-rc",
  "indexmap",
- "itertools",
+ "itertools 0.10.5",
  "jobserver",
  "lazycell",
  "libc",
@@ -2171,6 +2180,15 @@ name = "itertools"
 version = "0.10.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
+dependencies = [
+ "either",
+]
+
+[[package]]
+name = "itertools"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25db6b064527c5d482d0423354fcd07a89a2dfe07b67892e62411946db7f07b0"
 dependencies = [
  "either",
 ]
