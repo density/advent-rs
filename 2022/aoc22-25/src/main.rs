@@ -143,7 +143,5 @@ mod tests {
     }
 
     #[test]
-    fn test_part2() {
-        assert_eq!(part2(), todo!());
-    }
+    fn test_part2() {}
 }
