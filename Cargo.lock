@@ -589,8 +589,6 @@ name = "aoc23-01"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.12.0",
- "regex",
 ]
 
 [[package]]
