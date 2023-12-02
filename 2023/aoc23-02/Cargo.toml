@@ -1,10 +1,11 @@
 [package]
-name = "hymns"
+name = "aoc23-02"
 version = "0.1.0"
-authors = ["Justin Prieto <justin@prieto.nyc>"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-num-traits = "0"
+hymns = { path = "../../hymns" }
+itertools = "0"
+nom = "7"
