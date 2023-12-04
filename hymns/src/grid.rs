@@ -1,3 +1,4 @@
+use std::ops::{Index, IndexMut};
 use crate::p2;
 use crate::vector2::Point2;
 
@@ -46,12 +47,12 @@ impl<T> Grid<T> {
         self.iter_points().map(|p| (p, self.get_value(&p)))
     }
 
-    pub fn get_value(&self, p: &Point2<usize>) -> &T {
-        &self.elems[p.y][p.x]
+    pub fn get_value(&self, p: &Point2<usize>) -> Option<&T> {
+        self.elems.get(p.y).and_then(|row| row.get(p.x))
     }
 
-    pub fn get_value_mut(&mut self, p: &Point2<usize>) -> &mut T {
-        self.elems.get_mut(p.y).unwrap().get_mut(p.x).unwrap()
+    pub fn get_value_mut(&mut self, p: &Point2<usize>) -> Option<&mut T> {
+        self.elems.get_mut(p.y).and_then(|row| row.get_mut(p.x))
     }
 
     pub fn set_value(&mut self, p: &Point2<usize>, val: T) {
@@ -64,6 +65,21 @@ impl<T> Grid<T> {
         neighbors
     }
 }
+
+impl<T> Index<Point2<usize>> for Grid<T> {
+    type Output = T;
+
+    fn index(&self, p: Point2<usize>) -> &Self::Output {
+        &self.elems[p.y][p.x]
+    }
+}
+
+impl<T> IndexMut<Point2<usize>> for Grid<T> {
+    fn index_mut(&mut self, p: Point2<usize>) -> &mut Self::Output {
+        &mut self.elems[p.y][p.x]
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
