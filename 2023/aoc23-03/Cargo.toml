@@ -1,5 +1,5 @@
 [package]
-name = "aoc23-02"
+name = "aoc23-03"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,4 +7,3 @@ edition = "2021"
 
 [dependencies]
 hymns = { path = "../../hymns" }
-nom = "7"

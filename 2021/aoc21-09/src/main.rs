@@ -35,7 +35,7 @@ fn trace_basin(grid: &Grid<u8>, start: &Point) -> usize {
         seen.insert(current);
 
         for neighbor in grid.neighbor_coords(&current, false) {
-            if grid.get_value(&neighbor) != 9 && !seen.contains(&neighbor) {
+            if *grid.get_value(&neighbor) != 9 && !seen.contains(&neighbor) {
                 frontier.push_back(neighbor);
             }
         }
