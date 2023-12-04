@@ -17,7 +17,7 @@ fn step(grid: &mut Grid<u8>) -> usize {
         let mut flashed_or_affected_points = vec![];
 
         for (point, energy) in grid.iter_points_values() {
-            if energy > 9 && !flash_points.contains(&point) {
+            if *energy > 9 && !flash_points.contains(&point) {
                 flash_points.insert(point);
                 flashed_or_affected_points.push(point);
                 flashed_or_affected_points.extend(grid.neighbor_coords(&point, true));
@@ -30,7 +30,7 @@ fn step(grid: &mut Grid<u8>) -> usize {
 
         for point in flashed_or_affected_points {
             if flash_points.contains(&point) {
-                if grid.get_value(&point) > 9 {
+                if *grid.get_value(&point) > 9 {
                     *grid.get_value_mut(&point) = 0
                 }
             } else {

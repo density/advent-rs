@@ -596,8 +596,14 @@ name = "aoc23-02"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
  "nom",
+]
+
+[[package]]
+name = "aoc23-03"
+version = "0.1.0"
+dependencies = [
+ "hymns",
 ]
 
 [[package]]

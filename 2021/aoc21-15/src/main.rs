@@ -46,7 +46,7 @@ fn get_least_total_risk_path(grid: &Grid<u8>) -> usize {
 
     while let Some(u) = queue.extract_min() {
         for v in grid.neighbor_coords(&u, false) {
-            let alt = dist[u.x][u.y].unwrap_or(0) + usize::from(grid.get_value(&v));
+            let alt = dist[u.x][u.y].unwrap_or(0) + usize::from(*grid.get_value(&v));
 
             if alt < dist[v.x][v.y].unwrap_or(usize::MAX) {
                 dist[v.x][v.y] = Some(alt);
