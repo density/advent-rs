@@ -607,6 +607,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc23-04"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+]
+
+[[package]]
 name = "arc-swap"
 version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
