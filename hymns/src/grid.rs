@@ -35,6 +35,10 @@ impl<T> Grid<T> {
         self.elems.iter().flatten()
     }
 
+    pub fn into_iter_values(self) -> impl Iterator<Item = T> {
+        self.elems.into_iter().flatten()
+    }
+
     pub fn iter_values_mut(&mut self) -> impl Iterator<Item = &mut T> {
         self.elems.iter_mut().flatten()
     }
@@ -44,7 +48,7 @@ impl<T> Grid<T> {
     }
 
     pub fn iter_points_values(&self) -> impl Iterator<Item = (Point2<usize>, &T)> + '_ {
-        self.iter_points().map(|p| (p, self.get_value(&p)))
+        self.iter_points().map(|p| (p, &self[p]))
     }
 
     pub fn get_value(&self, p: &Point2<usize>) -> Option<&T> {
@@ -98,12 +102,15 @@ mod tests {
         assert_eq!(g.rows(), 3);
         assert_eq!(g.cols(), 5);
 
-        assert_eq!(g.get_value(&p2!(0, 0)), &0);
-        assert_eq!(g.get_value(&p2!(2, 2)), &12);
+        assert_eq!(g[p2!(0, 0)], 0);
+        assert_eq!(g[p2!(2, 2)], 12);
+
+        assert_eq!(g.get_value(&p2!(0, 0)), Some(&0));
+        assert_eq!(g.get_value(&p2!(2, 2)), Some(&12));
 
         let mut g = g;
         g.set_value(&p2!(1, 1), 999);
-        assert_eq!(g.get_value(&p2!(1, 1)), &999);
+        assert_eq!(g.get_value(&p2!(1, 1)), Some(&999));
     }
 
     #[test]
