@@ -83,6 +83,16 @@ impl<T> Grid<T> {
         neighbors.retain(|p| p.y < self.rows() && p.x < self.cols());
         neighbors
     }
+
+    pub fn iter_neighbors(
+        &self,
+        point2: &Point2<usize>,
+        extended: bool,
+    ) -> impl Iterator<Item = (Point2<usize>, &T)> + '_ {
+        self.neighbor_coords(point2, extended)
+            .into_iter()
+            .map(move |p| (p, &self[p]))
+    }
 }
 
 impl<T> Index<Point2<usize>> for Grid<T> {
@@ -255,6 +265,29 @@ mod tests {
                 p2!(0, 2),
                 p2!(2, 0),
                 p2!(2, 2),
+            ]
+        );
+
+        assert_eq!(
+            g.iter_neighbors(&p2!(1, 1), false).collect::<Vec<_>>(),
+            vec![
+                (p2!(0, 1), &3),
+                (p2!(2, 1), &5),
+                (p2!(1, 0), &1),
+                (p2!(1, 2), &7),
+            ]
+        );
+        assert_eq!(
+            g.iter_neighbors(&p2!(1, 1), true).collect::<Vec<_>>(),
+            vec![
+                (p2!(0, 1), &3),
+                (p2!(2, 1), &5),
+                (p2!(1, 0), &1),
+                (p2!(1, 2), &7),
+                (p2!(0, 0), &0),
+                (p2!(0, 2), &6),
+                (p2!(2, 0), &2),
+                (p2!(2, 2), &8),
             ]
         );
     }
