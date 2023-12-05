@@ -54,7 +54,7 @@ fn part1() -> u64 {
         }
 
         for neighbor in grid.neighbor_coords(&point, false) {
-            if *grid.get_value(&neighbor) <= *grid.get_value(&point) + 1 {
+            if grid[neighbor] <= grid[point] + 1 {
                 queue.push_back((distance + 1, neighbor));
             }
         }
@@ -74,7 +74,7 @@ fn part2() -> u64 {
     let mut seen = HashSet::new();
 
     while let Some((distance, point)) = queue.pop_front() {
-        if *grid.get_value(&point) == b'a' {
+        if grid[point] == b'a' {
             return distance;
         }
 
@@ -83,7 +83,7 @@ fn part2() -> u64 {
         }
 
         for neighbor in grid.neighbor_coords(&point, false) {
-            if *grid.get_value(&point) <= *grid.get_value(&neighbor) + 1 {
+            if grid[point] <= grid[neighbor] + 1 {
                 queue.push_back((distance + 1, neighbor));
             }
         }

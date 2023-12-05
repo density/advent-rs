@@ -30,11 +30,13 @@ fn step(grid: &mut Grid<u8>) -> usize {
 
         for point in flashed_or_affected_points {
             if flash_points.contains(&point) {
-                if *grid.get_value(&point) > 9 {
-                    *grid.get_value_mut(&point) = 0
+                let cell = &mut grid[point];
+
+                if *cell > 9 {
+                    *cell = 0
                 }
             } else {
-                *grid.get_value_mut(&point) += 1;
+                grid[point] += 1;
             }
         }
     }
