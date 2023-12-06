@@ -161,7 +161,7 @@ name = "aoc16-02"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
  "regex",
 ]
 
@@ -611,6 +611,16 @@ name = "aoc23-04"
 version = "0.1.0"
 dependencies = [
  "hymns",
+]
+
+[[package]]
+name = "aoc23-05"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+ "itertools 0.12.0",
+ "rayon",
+ "regex",
 ]
 
 [[package]]
@@ -2734,6 +2744,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6f97cdb2a36ed4183de61b2f824cc45c9f1037f28afe0a322e9fff4c108b5aaa"
 dependencies = [
  "rand_core",
+]
+
+[[package]]
+name = "rayon"
+version = "1.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c27db03db7734835b3f53954b534c91069375ce6ccaa2e065441e07d9b6cdb1"
+dependencies = [
+ "either",
+ "rayon-core",
+]
+
+[[package]]
+name = "rayon-core"
+version = "1.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ce3fb6ad83f861aac485e76e1985cd109d9a3713802152be56c3b1f0e0658ed"
+dependencies = [
+ "crossbeam-deque",
+ "crossbeam-utils",
 ]
 
 [[package]]
