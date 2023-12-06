@@ -1,5 +1,3 @@
-use std::collections::BTreeMap;
-
 use itertools::Itertools;
 
 use hymns::input::parse_numbers_only;
@@ -7,7 +5,7 @@ use hymns::runner::timed_run;
 
 const INPUT: &str = include_str!("../input.txt");
 
-type IntervalMap = BTreeMap<Interval, Interval>;
+type IntervalMap = Vec<(Interval, Interval)>;
 
 fn parse_map(lines: &str) -> IntervalMap {
     lines
@@ -21,6 +19,7 @@ fn parse_map(lines: &str) -> IntervalMap {
                 Interval::new(dest, dest + len),
             )
         })
+        .sorted()
         .collect()
 }
 
