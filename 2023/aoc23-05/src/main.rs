@@ -31,7 +31,7 @@ struct Interval {
 
 impl Interval {
     fn new(start: u64, end: u64) -> Self {
-        assert!(start < end);
+        debug_assert!(start < end);
         Self { start, end }
     }
 
@@ -51,7 +51,7 @@ impl Interval {
     }
 
     fn remap_interval(&mut self, src: &Interval, dst: &Interval) {
-        assert_eq!(src.len(), dst.len());
+        debug_assert_eq!(src.len(), dst.len());
         let offset = self.start - src.start;
         let length = self.len();
 
