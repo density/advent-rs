@@ -13,8 +13,8 @@ fn apply_rules(counter: Counter<(char, char)>, rules: &Rules) -> Counter<(char, 
     for ((old_prefix, old_suffix), count) in counter.into_iter() {
         let insert = rules[&(old_prefix, old_suffix)];
 
-        new_counter.increment_count(&(old_prefix, insert), count);
-        new_counter.increment_count(&(insert, old_suffix), count);
+        new_counter.increment_count((old_prefix, insert), count);
+        new_counter.increment_count((insert, old_suffix), count);
     }
 
     new_counter
@@ -24,9 +24,9 @@ fn get_most_least_common2(counter: Counter<(char, char)>, last: char) -> (usize,
     let mut char_counts = Counter::new();
 
     for ((c1, _), count) in counter.into_iter() {
-        char_counts.increment_count(&c1, count);
+        char_counts.increment_count(c1, count);
     }
-    char_counts.add(&last);
+    char_counts.add(last);
 
     let mut sorted: Vec<_> = char_counts.into_counts().collect();
     sorted.sort_unstable();

@@ -1,9 +1,9 @@
 use std::borrow::Borrow;
 use std::collections::HashMap;
 use std::hash::Hash;
-use std::ops::{Index, IndexMut};
+use std::ops::Index;
 
-struct DefaultHashMap<K, V>
+pub struct DefaultHashMap<K, V>
 where
     K: Hash + Eq,
     V: Clone,
@@ -62,9 +62,23 @@ where
     }
 }
 
+impl<K, V> From<HashMap<K, V>> for DefaultHashMap<K, V>
+where
+    K: Eq + Hash,
+    V: Default + Clone,
+{
+    fn from(map: HashMap<K, V>) -> Self {
+        Self {
+            map,
+            default: Default::default(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::default_map::DefaultHashMap;
+    use std::collections::HashMap;
 
     #[test]
     fn test_hashmap() {
@@ -85,5 +99,16 @@ mod tests {
 
         *default_map.get_mut(key.to_string()) = 10;
         assert_eq!(default_map[key], 10);
+    }
+
+    #[test]
+    fn test_from_hashmap() {
+        let mut map = HashMap::new();
+        map.insert("hello".to_string(), 5_usize);
+
+        let default_map: DefaultHashMap<String, usize> = map.into();
+
+        assert_eq!(default_map["hello"], 5);
+        assert_eq!(default_map["world"], 0);
     }
 }

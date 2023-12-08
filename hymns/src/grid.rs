@@ -214,7 +214,6 @@ mod tests {
     #[test]
     fn test_iter_mut() {
         let data = vec![vec![0, 1, 2], vec![3, 4, 5], vec![6, 7, 8]];
-        let data_flattened = data.iter().flatten().cloned().collect::<GridRow>();
         let g = Grid::new(data.clone());
 
         let mut g_clone = g.clone();
