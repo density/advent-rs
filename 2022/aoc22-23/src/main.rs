@@ -1,6 +1,6 @@
 use std::collections::{HashMap, HashSet};
 
-use hymns::counter::Counter;
+use hymns::counter::CounterCollect;
 use hymns::p2;
 use hymns::runner::timed_run;
 use hymns::vector2::Point2;
@@ -75,17 +75,11 @@ fn calc_moves(grid: &Grid, ts: usize) -> Grid {
         old_point_to_new_point.insert(elf, elf);
     }
 
-    let counter = Counter::from_iter(old_point_to_new_point.values().cloned());
+    let counter = old_point_to_new_point.values().cloned().collect_counter();
 
     old_point_to_new_point
         .into_iter()
-        .map(|(old, new)| {
-            if counter.get(&new).unwrap_or_default() > 1 {
-                old
-            } else {
-                new
-            }
-        })
+        .map(|(old, new)| if counter[&new] > 1 { old } else { new })
         .collect()
 }
 

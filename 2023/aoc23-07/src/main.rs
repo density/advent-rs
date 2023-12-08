@@ -1,5 +1,4 @@
-use hymns::counter::Counter;
-use hymns::default_map::DefaultHashMap;
+use hymns::counter::{Counter, CounterCollect};
 use hymns::runner::timed_run;
 use itertools::Itertools;
 
@@ -79,12 +78,11 @@ impl Hand {
     }
 
     fn hand_type(cards: &[Card; 5]) -> HandType {
-        let mut counts: Counter<Card> = Counter::from_iter(cards.iter().cloned());
+        let mut counts: Counter<Card> = cards.iter().cloned().collect_counter();
 
         let joker_count = counts.remove(&Card::Joker).unwrap_or_default();
 
-        let counts: DefaultHashMap<usize, usize> =
-            Counter::from_iter(counts.counts()).into_map().into();
+        let counts = counts.into_values().collect_counter();
 
         if counts[&5] == 1 {
             return HandType::FiveOfAKind;

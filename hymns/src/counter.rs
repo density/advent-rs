@@ -1,91 +1,38 @@
-use std::collections::hash_map::IntoIter;
-use std::collections::HashMap;
 use std::hash::Hash;
-use std::ops::Index;
 
-#[derive(Default, Debug, Clone)]
-pub struct Counter<T: Eq + Hash> {
-    counts: HashMap<T, usize>,
-}
+use crate::default_map::DefaultHashMap;
 
-impl<T: Eq + Hash> Counter<T> {
-    pub fn new() -> Self {
-        Self {
-            counts: HashMap::new(),
-        }
-    }
+pub type Counter<T> = DefaultHashMap<T, usize>;
 
-    pub fn add(&mut self, key: T) {
-        *self.counts.entry(key).or_insert(0) += 1
-    }
-
-    pub fn increment_count(&mut self, key: T, count: usize) {
-        *self.counts.entry(key).or_insert(0) += count
-    }
-
-    pub fn remove(&mut self, key: &T) -> Option<usize> {
-        self.counts.remove(key)
-    }
-
-    pub fn contains(&mut self, key: &T) -> bool {
-        self.counts.contains_key(key)
-    }
-
-    pub fn iter(&self) -> impl Iterator<Item = (&T, usize)> {
-        self.counts.iter().map(|(k, v)| (k, *v))
-    }
-
-    pub fn keys(&self) -> impl Iterator<Item = &T> {
-        self.counts.keys()
-    }
-
-    pub fn into_keys(self) -> impl Iterator<Item = T> {
-        self.counts.into_keys()
-    }
-
-    pub fn counts(&self) -> impl Iterator<Item = usize> + '_ {
-        self.counts.values().cloned()
-    }
-
-    pub fn into_counts(self) -> impl Iterator<Item = usize> {
-        self.counts.into_values()
-    }
-
-    pub fn get(&self, k: &T) -> Option<usize> {
-        self.counts.get(k).cloned()
-    }
-
-    pub fn into_map(self) -> HashMap<T, usize> {
-        self.counts
+pub trait CounterCollect: Iterator {
+    fn collect_counter(self) -> DefaultHashMap<Self::Item, usize>
+    where
+        Self: Sized,
+        Self::Item: Hash + Eq,
+    {
+        self.fold(DefaultHashMap::new(), |mut counts, item| {
+            *counts.get_mut(item) += 1;
+            counts
+        })
     }
 }
 
-// impl Index for counter
-impl<T: Eq + Hash> Index<&T> for Counter<T> {
-    type Output = usize;
+impl<T> CounterCollect for T where T: Iterator {}
 
-    fn index(&self, index: &T) -> &Self::Output {
-        &self.counts[index]
-    }
-}
+#[cfg(test)]
+mod tests {
+    use itertools::Itertools;
 
-impl<T: Clone + Eq + Hash> FromIterator<T> for Counter<T> {
-    fn from_iter<I: IntoIterator<Item = T>>(iterator: I) -> Self {
-        let mut counter = Self::new();
+    use super::*;
 
-        for item in iterator {
-            counter.add(item);
-        }
+    #[test]
+    fn test_collect_counter() {
+        let v = vec![1, 2, 3, 3];
+        let counter = v.into_iter().collect_counter();
 
-        counter
-    }
-}
-
-impl<T: Clone + Eq + Hash> IntoIterator for Counter<T> {
-    type Item = (T, usize);
-    type IntoIter = IntoIter<T, usize>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.counts.into_iter()
+        assert_eq!(
+            counter.into_iter().sorted().collect_vec(),
+            vec![(1, 1), (2, 1), (3, 2)]
+        );
     }
 }

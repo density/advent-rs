@@ -1,6 +1,6 @@
+use hymns::counter::{Counter, CounterCollect};
 use std::collections::HashMap;
 
-use hymns::counter::Counter;
 use hymns::runner::timed_run;
 
 const INPUT: &str = include_str!("../input.txt");
@@ -13,8 +13,8 @@ fn apply_rules(counter: Counter<(char, char)>, rules: &Rules) -> Counter<(char, 
     for ((old_prefix, old_suffix), count) in counter.into_iter() {
         let insert = rules[&(old_prefix, old_suffix)];
 
-        new_counter.increment_count((old_prefix, insert), count);
-        new_counter.increment_count((insert, old_suffix), count);
+        *new_counter.get_mut((old_prefix, insert)) += count;
+        *new_counter.get_mut((insert, old_suffix)) += count;
     }
 
     new_counter
@@ -24,11 +24,11 @@ fn get_most_least_common2(counter: Counter<(char, char)>, last: char) -> (usize,
     let mut char_counts = Counter::new();
 
     for ((c1, _), count) in counter.into_iter() {
-        char_counts.increment_count(c1, count);
+        *char_counts.get_mut(c1) += count;
     }
-    char_counts.add(last);
+    *char_counts.get_mut(last) += 1;
 
-    let mut sorted: Vec<_> = char_counts.into_counts().collect();
+    let mut sorted: Vec<_> = char_counts.into_values().collect();
     sorted.sort_unstable();
 
     (sorted[0], sorted[sorted.len() - 1])
@@ -42,7 +42,7 @@ fn read_input() -> (Counter<(char, char)>, Rules, char) {
     let initial_counts: Counter<(char, char)> = first_line_bytes
         .windows(2)
         .map(|pair| (pair[0].into(), pair[1].into()))
-        .collect();
+        .collect_counter();
 
     line_iter.next(); // skip newline
 
