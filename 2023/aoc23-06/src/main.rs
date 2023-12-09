@@ -18,8 +18,8 @@ fn winning_hold_times(time: u64, distance: u64) -> u64 {
 fn part1() -> u64 {
     let mut lines = INPUT.lines();
 
-    let times: Vec<u64> = parse_numbers_only(lines.next().unwrap()).collect();
-    let distances: Vec<u64> = parse_numbers_only(lines.next().unwrap()).collect();
+    let times: Vec<u64> = parse_numbers_only(lines.next().unwrap(), false).collect();
+    let distances: Vec<u64> = parse_numbers_only(lines.next().unwrap(), false).collect();
 
     times
         .into_iter()
@@ -30,8 +30,12 @@ fn part1() -> u64 {
 fn part2() -> u64 {
     let mut lines = INPUT.lines().map(|line| line.replace(' ', ""));
 
-    let time: u64 = parse_numbers_only(&lines.next().unwrap()).next().unwrap();
-    let distance: u64 = parse_numbers_only(&lines.next().unwrap()).next().unwrap();
+    let time: u64 = parse_numbers_only(&lines.next().unwrap(), false)
+        .next()
+        .unwrap();
+    let distance: u64 = parse_numbers_only(&lines.next().unwrap(), false)
+        .next()
+        .unwrap();
 
     winning_hold_times(time, distance)
 }

@@ -12,7 +12,7 @@ fn parse_map(lines: &str) -> IntervalMap {
         .lines()
         .skip(1)
         .map(|line| {
-            let (dest, src, len) = parse_numbers_only(line).collect_tuple().unwrap();
+            let (dest, src, len) = parse_numbers_only(line, false).collect_tuple().unwrap();
 
             (
                 Interval::new(src, src + len),
@@ -97,7 +97,7 @@ fn remap_intervals(in_ranges: &[Interval], mapping: &IntervalMap) -> Vec<Interva
 fn part1() -> u64 {
     let mut groups = INPUT.split("\n\n");
 
-    let mut seed_ranges: Vec<Interval> = parse_numbers_only(groups.next().unwrap())
+    let mut seed_ranges: Vec<Interval> = parse_numbers_only(groups.next().unwrap(), false)
         .map(|start| Interval::new(start, start + 1))
         .collect();
 
@@ -115,7 +115,7 @@ fn part1() -> u64 {
 fn part2() -> u64 {
     let mut groups = INPUT.split("\n\n");
 
-    let mut seed_ranges: Vec<Interval> = parse_numbers_only(groups.next().unwrap())
+    let mut seed_ranges: Vec<Interval> = parse_numbers_only(groups.next().unwrap(), false)
         .tuples()
         .map(|(start, len)| Interval::new(start, start + len))
         .collect();

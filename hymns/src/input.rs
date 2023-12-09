@@ -36,13 +36,22 @@ where
     parse_iterable(s.split(delim))
 }
 
-pub fn parse_numbers_only<'a, T: 'a>(s: &'a str) -> impl Iterator<Item = T> + 'a
+pub fn parse_numbers_only<'a, T: 'a>(
+    s: &'a str,
+    allow_negatives: bool,
+) -> impl Iterator<Item = T> + 'a
 where
     T: PrimInt + FromStr,
     <T as FromStr>::Err: Debug,
 {
-    s.split(|c: char| !c.is_numeric())
-        .filter_map(|s| s.parse::<T>().ok())
+    s.split(move |c: char| {
+        if allow_negatives {
+            !c.is_numeric() && c != '-'
+        } else {
+            !c.is_numeric()
+        }
+    })
+    .filter_map(|s| s.parse::<T>().ok())
 }
 
 #[cfg(test)]
@@ -89,15 +98,27 @@ mod tests {
     #[test]
     fn test_parse_numbers_only() {
         assert_eq!(
-            parse_numbers_only("1,2,3,4").collect::<Vec<u32>>(),
+            parse_numbers_only("1,2,3,4", false).collect::<Vec<u32>>(),
             vec![1, 2, 3, 4]
         );
         assert_eq!(
-            parse_numbers_only("100     200  300asdfase400").collect::<Vec<i32>>(),
+            parse_numbers_only("-1,-2,-3,-4", false).collect::<Vec<u32>>(),
+            vec![1, 2, 3, 4]
+        );
+        assert_eq!(
+            parse_numbers_only("-1,-2,-3,-4", true).collect::<Vec<i32>>(),
+            vec![-1, -2, -3, -4]
+        );
+        assert_eq!(
+            parse_numbers_only("100     200  300asdfase400", false).collect::<Vec<i32>>(),
             vec![100, 200, 300, 400]
         );
         assert_eq!(
-            parse_numbers_only("no numbers here").collect::<Vec<i32>>(),
+            parse_numbers_only("-100     -200  -300asdfase-400", true).collect::<Vec<i32>>(),
+            vec![-100, -200, -300, -400]
+        );
+        assert_eq!(
+            parse_numbers_only("no numbers here", false).collect::<Vec<i32>>(),
             vec![]
         );
     }
