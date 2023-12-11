@@ -1,6 +1,9 @@
 use crate::p2;
 use crate::vector2::Point2;
+use itertools::Itertools;
+use std::fmt::{Debug, Display, Formatter};
 use std::ops::{Index, IndexMut};
+use std::str::FromStr;
 
 #[derive(Clone)]
 pub struct Grid<T> {
@@ -9,6 +12,7 @@ pub struct Grid<T> {
 
 impl<T> Grid<T> {
     pub fn new(elems: Vec<Vec<T>>) -> Self {
+        debug_assert!(elems.iter().skip(1).all(|row| row.len() == elems[0].len()));
         Self { elems }
     }
 
@@ -46,6 +50,14 @@ impl<T> Grid<T> {
 
     pub fn iter_values_mut(&mut self) -> impl Iterator<Item = &mut T> {
         self.elems.iter_mut().flatten()
+    }
+
+    pub fn iter_cols(&self) -> impl Iterator<Item = Vec<&T>> {
+        (0..self.cols()).map(move |c| {
+            (0..self.rows())
+                .map(move |r| &self.elems[r][c])
+                .collect_vec()
+        })
     }
 
     pub fn iter_points(&self) -> impl Iterator<Item = Point2<usize>> + '_ {
@@ -92,6 +104,50 @@ impl<T> Grid<T> {
         self.neighbor_coords(point2, extended)
             .into_iter()
             .map(move |p| (p, &self[p]))
+    }
+}
+
+impl<T> Display for Grid<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        for row in self.iter_rows() {
+            for col in row {
+                write!(f, "{col}")?;
+            }
+            writeln!(f)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl<T> Debug for Grid<T>
+where
+    T: Debug,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        for row in self.iter_rows() {
+            for col in row {
+                write!(f, "{col:?}")?;
+            }
+            writeln!(f)?;
+        }
+
+        Ok(())
+    }
+}
+
+impl FromStr for Grid<char> {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self::new(
+            s.lines()
+                .map(|line| line.chars().collect_vec())
+                .collect_vec(),
+        ))
     }
 }
 
@@ -209,6 +265,11 @@ mod tests {
             g.iter_values().cloned().collect::<Vec<_>>(),
             vec![0, 1, 2, 3, 4, 5, 6, 7, 8]
         );
+
+        assert_eq!(
+            g.iter_cols().collect::<Vec<_>>(),
+            vec![vec![&0, &3, &6], vec![&1, &4, &7], vec![&2, &5, &8],]
+        );
     }
 
     #[test]
@@ -289,5 +350,23 @@ mod tests {
                 (p2!(2, 2), &8),
             ]
         );
+    }
+
+    #[test]
+    fn test_display_debug() {
+        let g = Grid::new(vec![vec!["0", "1"], vec!["2", "3"]]);
+
+        assert_eq!(format!("{}", g), "01\n23\n");
+
+        assert_eq!(
+            format!("{:?}", g),
+            concat!(r#""0""1""#, "\n", r#""2""3""#, "\n")
+        );
+    }
+
+    #[test]
+    fn test_from_str() {
+        let grid: Grid<char> = "01\n23\n".parse().unwrap();
+        assert_eq!(grid.elems, vec![vec!['0', '1'], vec!['2', '3']]);
     }
 }
