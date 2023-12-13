@@ -209,14 +209,14 @@ mod tests {
     #[test]
     fn test_iterators() {
         let data = vec![vec![0, 1, 2], vec![3, 4, 5], vec![6, 7, 8]];
-        let data_flattened = data.iter().flatten().cloned().collect::<GridRow>();
+        let data_flattened = data.iter().flatten().copied().collect::<GridRow>();
         let g = Grid::new(data.clone());
 
         assert_eq!(g.iter_rows().cloned().collect::<GridVec>(), data);
         assert_eq!(g.clone().into_iter_rows().collect::<GridVec>(), data);
 
         assert_eq!(
-            g.iter_values().cloned().collect::<GridRow>(),
+            g.iter_values().copied().collect::<GridRow>(),
             data_flattened
         );
         assert_eq!(
@@ -268,7 +268,7 @@ mod tests {
         );
 
         assert_eq!(
-            g.iter_values().cloned().collect::<Vec<_>>(),
+            g.iter_values().copied().collect::<Vec<_>>(),
             vec![0, 1, 2, 3, 4, 5, 6, 7, 8]
         );
 
@@ -288,7 +288,7 @@ mod tests {
             *cell += 1;
         }
         assert_eq!(
-            g_clone.iter_values().cloned().collect::<Vec<_>>(),
+            g_clone.iter_values().copied().collect::<Vec<_>>(),
             vec![1, 2, 3, 4, 5, 6, 7, 8, 9]
         );
 
@@ -299,7 +299,7 @@ mod tests {
             }
         }
         assert_eq!(
-            g_clone.iter_values().cloned().collect::<Vec<_>>(),
+            g_clone.iter_values().copied().collect::<Vec<_>>(),
             vec![1, 2, 3, 4, 5, 6, 7, 8, 9]
         );
     }
@@ -362,10 +362,10 @@ mod tests {
     fn test_display_debug() {
         let g = Grid::new(vec![vec!["0", "1"], vec!["2", "3"]]);
 
-        assert_eq!(format!("{}", g), "01\n23\n");
+        assert_eq!(format!("{g}"), "01\n23\n");
 
         assert_eq!(
-            format!("{:?}", g),
+            format!("{g:?}"),
             concat!(r#""0""1""#, "\n", r#""2""3""#, "\n")
         );
     }

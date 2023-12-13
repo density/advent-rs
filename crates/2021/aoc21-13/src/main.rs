@@ -120,12 +120,12 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        let mut expected = r#"###  #### #  # ###   ##    ## #### #  #
+        let mut expected = r"###  #### #  # ###   ##    ## #### #  #
 #  # #    # #  #  # #  #    #    # #  #
 ###  ###  ##   #  # #       #   #  #  #
 #  # #    # #  ###  #       #  #   #  #
 #  # #    # #  # #  #  # #  # #    #  #
-###  #    #  # #  #  ##   ##  ####  ## "#
+###  #    #  # #  #  ##   ##  ####  ## "
             .to_string();
         // This is just to avoid ending a source code line with whitespace
         expected.push('\n');

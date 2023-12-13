@@ -339,7 +339,7 @@ mod tests {
 
     #[test]
     fn test_part1() {
-        assert_eq!(part1(), 29125888761511);
+        assert_eq!(part1(), 29_125_888_761_511);
     }
 
     #[test]

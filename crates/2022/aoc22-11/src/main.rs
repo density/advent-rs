@@ -147,6 +147,6 @@ mod tests {
 
     #[test]
     fn test_part2() {
-        assert_eq!(part2(), 14636993466);
+        assert_eq!(part2(), 14_636_993_466);
     }
 }

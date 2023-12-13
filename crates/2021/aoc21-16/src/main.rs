@@ -266,7 +266,7 @@ mod tests {
 
     #[test]
     fn test_read_literal_group() {
-        let data: [u8; 2] = [0b10111111, 0b10001010];
+        let data: [u8; 2] = [0b1011_1111, 0b1000_1010];
         let input = (&data[..], 0);
 
         let (_, value) = literal_group(input).unwrap();
@@ -286,7 +286,7 @@ mod tests {
                 type_id: 4,
                 contents: PacketContents::Literal(2021,),
             }
-        )
+        );
     }
 
     #[test]
