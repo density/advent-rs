@@ -32,6 +32,16 @@ impl<T> Grid<T> {
         self.elems.first().map_or(0, Vec::len)
     }
 
+    #[must_use]
+    pub fn row(&self, row: usize) -> Vec<&T> {
+        self.elems[row].iter().collect_vec()
+    }
+
+    #[must_use]
+    pub fn col(&self, col: usize) -> Vec<&T> {
+        self.elems.iter().map(|row| &row[col]).collect_vec()
+    }
+
     pub fn iter_rows(&self) -> impl Iterator<Item = &Vec<T>> {
         self.elems.iter()
     }
@@ -204,6 +214,9 @@ mod tests {
         let mut g = g;
         g.set_value(&p2!(1, 1), 999);
         assert_eq!(g.get_value(&p2!(1, 1)), Some(&999));
+
+        assert_eq!(g.row(1), vec![&5, &999, &7, &8, &9]);
+        assert_eq!(g.col(1), vec![&1, &999, &11]);
     }
 
     #[test]
