@@ -42,8 +42,8 @@ impl<T> Grid<T> {
         self.elems.iter().map(|row| &row[col]).collect_vec()
     }
 
-    pub fn iter_rows(&self) -> impl Iterator<Item = &Vec<T>> {
-        self.elems.iter()
+    pub fn iter_rows(&self) -> impl Iterator<Item = &[T]> {
+        self.elems.iter().map(Vec::as_slice)
     }
 
     pub fn iter_rows_mut(&mut self) -> impl Iterator<Item = &mut Vec<T>> {
@@ -225,7 +225,10 @@ mod tests {
         let data_flattened = data.iter().flatten().copied().collect::<GridRow>();
         let g = Grid::new(data.clone());
 
-        assert_eq!(g.iter_rows().cloned().collect::<GridVec>(), data);
+        assert_eq!(
+            g.iter_rows().map(<[i32]>::to_vec).collect::<GridVec>(),
+            data
+        );
         assert_eq!(g.clone().into_iter_rows().collect::<GridVec>(), data);
 
         assert_eq!(
