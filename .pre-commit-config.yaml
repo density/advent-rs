@@ -10,7 +10,7 @@ repos:
       - id: clippy
         name: clippy
         description: clippy
-        entry: cargo clippy -q -- -W clippy::all
+        entry: cargo clippy -q
         language: system
         files: \.rs$
         pass_filenames: false

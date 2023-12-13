@@ -1,12 +1,36 @@
 [workspace]
 resolver = "2"
 members = [
-    "2015/*",
-    "2016/*",
-    "2020/*",
-    "2021/*",
-    "2022/*",
-    "2023/*",
-    "hymns",
-    "builder"
+    "crates/2015/*",
+    "crates/2016/*",
+    "crates/2020/*",
+    "crates/2021/*",
+    "crates/2022/*",
+    "crates/2023/*",
+    "crates/hymns",
+    "crates/builder"
 ]
+
+[workspace.dependencies]
+hymns = { path = "crates/hymns" }
+itertools = "0"
+nom = "7"
+rayon = "1"
+regex = "1"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn" }
+
+missing_panics_doc = "allow"
+similar_names = "allow"
+too_many_lines = "allow"
+match_on_vec_items = "allow"
+
+dbg_macro = "warn"
+empty_drop = "warn"
+empty_structs_with_brackets = "warn"
+exit = "warn"
+get_unwrap = "warn"
+rc_buffer = "warn"
+rc_mutex = "warn"
+rest_pat_in_fully_bound_structs = "warn"
