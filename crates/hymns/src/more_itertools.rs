@@ -15,6 +15,14 @@ pub trait MoreItertools: Iterator {
             counts
         })
     }
+
+    fn collect_string(self) -> String
+    where
+        Self: Sized,
+        Self::Item: ToString,
+    {
+        self.map(|item| item.to_string()).collect()
+    }
 }
 
 impl<T> MoreItertools for T where T: Iterator {}
@@ -34,5 +42,13 @@ mod tests {
             counter.into_iter().sorted().collect_vec(),
             vec![(1, 1), (2, 1), (3, 2)]
         );
+    }
+
+    #[test]
+    fn test_collect_string() {
+        let v = vec![1, 2, 3, 3];
+        let s = v.into_iter().collect_string();
+
+        assert_eq!(s, "1233");
     }
 }
