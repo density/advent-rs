@@ -167,6 +167,18 @@ impl FromStr for Grid<char> {
     }
 }
 
+impl FromStr for Grid<u8> {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(Self::new(
+            s.lines()
+                .map(|line| line.as_bytes().iter().copied().collect_vec())
+                .collect_vec(),
+        ))
+    }
+}
+
 impl<T> Index<Point2<usize>> for Grid<T> {
     type Output = T;
 
@@ -390,5 +402,8 @@ mod tests {
     fn test_from_str() {
         let grid: Grid<char> = "01\n23\n".parse().unwrap();
         assert_eq!(grid.elems, vec![vec!['0', '1'], vec!['2', '3']]);
+
+        let grid: Grid<u8> = "01\n23\n".parse().unwrap();
+        assert_eq!(grid.elems, vec![vec![b'0', b'1'], vec![b'2', b'3']]);
     }
 }
