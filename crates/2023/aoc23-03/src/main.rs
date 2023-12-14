@@ -69,7 +69,7 @@ impl<'a> Iterator for PartIterator<'a> {
 }
 
 fn part1() -> u64 {
-    let grid = Grid::new(INPUT.lines().map(|line| line.chars().collect()).collect());
+    let grid: Grid<char> = INPUT.parse().unwrap();
 
     let parts: Vec<Part> = PartIterator::new(INPUT).collect();
 
@@ -98,7 +98,7 @@ fn part1() -> u64 {
 }
 
 fn part2() -> u64 {
-    let grid = Grid::new(INPUT.lines().map(|line| line.chars().collect()).collect());
+    let grid: Grid<char> = INPUT.parse().unwrap();
 
     let part_numbers: Vec<Part> = PartIterator::new(INPUT).collect();
 
