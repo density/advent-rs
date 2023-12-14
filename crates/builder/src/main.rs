@@ -27,12 +27,16 @@ fn write_dependencies(proj_dir: &Path) {
     let mut cargo_toml = read_to_string(&toml_path).expect("Could not read Cargo.toml");
 
     let search_str = "[dependencies]";
-    let insert_pos = cargo_toml
-        .find(search_str)
-        .expect("Could not find [dependencies] section.")
-        + search_str.len();
 
-    cargo_toml.insert_str(insert_pos, &format!("\n{DEFAULT_DEPS}"));
+    let dependency_pos = cargo_toml
+        .find(search_str)
+        .expect("Could not find [dependencies] section.");
+
+    cargo_toml.insert_str(
+        dependency_pos + search_str.len(),
+        &format!("\n{DEFAULT_DEPS}"),
+    );
+    cargo_toml.insert_str(dependency_pos, "[lints]\nworkspace = true\n\n");
 
     OpenOptions::new()
         .write(true)

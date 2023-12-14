@@ -2,10 +2,11 @@ use crate::p2;
 use crate::vector2::Point2;
 use itertools::Itertools;
 use std::fmt::{Debug, Display, Formatter};
+use std::hash::{Hash, Hasher};
 use std::ops::{Index, IndexMut};
 use std::str::FromStr;
 
-#[derive(Clone)]
+#[derive(Eq, PartialEq, Clone)]
 pub struct Grid<T> {
     elems: Vec<Vec<T>>,
 }
@@ -176,6 +177,17 @@ impl FromStr for Grid<u8> {
                 .map(|line| line.as_bytes().iter().copied().collect_vec())
                 .collect_vec(),
         ))
+    }
+}
+
+impl<T> Hash for Grid<T>
+where
+    T: Hash + Eq,
+{
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        for row in self.iter_rows() {
+            Hash::hash_slice(row, state);
+        }
     }
 }
 

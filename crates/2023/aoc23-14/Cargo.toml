@@ -1,5 +1,5 @@
 [package]
-name = "aoc23-13"
+name = "aoc23-14"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 hymns = { workspace = true }
 itertools = { workspace = true }
+regex = { workspace = true }
 
 [lints]
 workspace = true
