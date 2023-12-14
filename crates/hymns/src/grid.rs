@@ -156,27 +156,41 @@ where
     }
 }
 
-impl FromStr for Grid<char> {
+impl<T> FromStr for Grid<T>
+where
+    T: From<char>,
+{
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self::new(
             s.lines()
-                .map(|line| line.chars().collect_vec())
+                .map(|line| line.chars().map(|c| T::from(c)).collect_vec())
                 .collect_vec(),
         ))
     }
 }
 
-impl FromStr for Grid<u8> {
-    type Err = ();
+impl<T> TryFrom<&str> for Grid<T>
+where
+    T: TryFrom<char>,
+{
+    type Error = ();
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(Self::new(
-            s.lines()
-                .map(|line| line.as_bytes().iter().copied().collect_vec())
-                .collect_vec(),
-        ))
+    fn try_from(s: &str) -> Result<Self, Self::Error> {
+        let mut elems = vec![];
+
+        for line in s.lines() {
+            let mut line_elems = vec![];
+
+            for c in line.chars() {
+                line_elems.push(T::try_from(c).map_err(|_| ())?);
+            }
+
+            elems.push(line_elems);
+        }
+
+        Ok(Self::new(elems))
     }
 }
 
@@ -412,10 +426,35 @@ mod tests {
 
     #[test]
     fn test_from_str() {
+        #[derive(Eq, PartialEq, Debug)]
+        enum Direction {
+            North,
+            South,
+        }
+
+        impl From<char> for Direction {
+            fn from(c: char) -> Self {
+                match c {
+                    'N' => Direction::North,
+                    'S' => Direction::South,
+                    _ => unreachable!(),
+                }
+            }
+        }
+
+        let grid: Grid<Direction> = "NS\nSN\n".parse().unwrap();
+        assert_eq!(
+            grid.elems,
+            vec![
+                vec![Direction::North, Direction::South],
+                vec![Direction::South, Direction::North]
+            ]
+        );
+
         let grid: Grid<char> = "01\n23\n".parse().unwrap();
         assert_eq!(grid.elems, vec![vec!['0', '1'], vec!['2', '3']]);
 
-        let grid: Grid<u8> = "01\n23\n".parse().unwrap();
+        let grid: Grid<u8> = "01\n23\n".try_into().unwrap();
         assert_eq!(grid.elems, vec![vec![b'0', b'1'], vec![b'2', b'3']]);
     }
 }

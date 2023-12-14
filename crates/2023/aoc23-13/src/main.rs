@@ -49,7 +49,7 @@ fn find_col<const MAX_DIFF: usize>(lines: &Grid<u8>) -> Option<usize> {
 fn solve<const MAX_DIFF: usize>() -> usize {
     let grids = INPUT
         .split("\n\n")
-        .map(|pat| pat.parse::<Grid<u8>>().unwrap())
+        .map(|pat| Grid::try_from(pat).unwrap())
         .collect_vec();
 
     grids

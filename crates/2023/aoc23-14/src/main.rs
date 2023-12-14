@@ -1,8 +1,6 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
-use itertools::Itertools;
-
 use hymns::grid::Grid;
 use hymns::p2;
 use hymns::runner::timed_run;
@@ -119,23 +117,13 @@ fn calculate_weight(grid: &Dish) -> usize {
 }
 
 fn part1() -> usize {
-    let grid = INPUT
-        .lines()
-        .map(|line| line.chars().map(Surface::from).collect_vec())
-        .collect_vec();
-    let mut grid = Grid::new(grid);
-
+    let mut grid: Grid<Surface> = INPUT.parse().unwrap();
     move_rocks(North, &mut grid);
-
     calculate_weight(&grid)
 }
 
 fn part2() -> usize {
-    let grid = INPUT
-        .lines()
-        .map(|line| line.chars().map(Surface::from).collect_vec())
-        .collect_vec();
-    let mut grid = Grid::new(grid);
+    let mut grid: Grid<Surface> = INPUT.parse().unwrap();
 
     let iterations = 1_000_000_000;
     let mut cycle = 0;
