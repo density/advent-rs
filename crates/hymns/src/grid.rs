@@ -1,10 +1,12 @@
-use crate::p2;
-use crate::vector2::Point2;
-use itertools::Itertools;
 use std::fmt::{Debug, Display, Formatter};
 use std::hash::{Hash, Hasher};
 use std::ops::{Index, IndexMut};
 use std::str::FromStr;
+
+use itertools::Itertools;
+
+use crate::p2;
+use crate::vector2::Point2;
 
 pub type GPoint = Point2<usize>;
 
@@ -180,19 +182,10 @@ where
     type Error = ();
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
-        let mut elems = vec![];
-
-        for line in s.lines() {
-            let mut line_elems = vec![];
-
-            for c in line.chars() {
-                line_elems.push(T::try_from(c).map_err(|_| ())?);
-            }
-
-            elems.push(line_elems);
-        }
-
-        Ok(Self::new(elems))
+        s.lines()
+            .map(|line| line.chars().map(T::try_from).try_collect().map_err(|_| ()))
+            .try_collect()
+            .map(Self::new)
     }
 }
 
@@ -224,6 +217,7 @@ impl<T> IndexMut<GPoint> for Grid<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     type GridRow = Vec<i32>;
     type GridVec = Vec<GridRow>;
     type Points = Vec<GPoint>;
