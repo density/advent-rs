@@ -1,15 +1,12 @@
 use std::cmp::Reverse;
 use std::collections::{HashSet, VecDeque};
 
-use hymns::grid::Grid;
+use hymns::grid::{GPoint, Grid};
 use hymns::runner::timed_run;
-use hymns::vector2::Point2;
 
 const INPUT: &str = include_str!("../input.txt");
 
-type Point = Point2<usize>;
-
-fn find_low_points(grid: &Grid<u8>) -> Vec<Point> {
+fn find_low_points(grid: &Grid<u8>) -> Vec<GPoint> {
     grid.iter_points_values()
         .filter_map(|(point, height)| {
             if grid
@@ -25,7 +22,7 @@ fn find_low_points(grid: &Grid<u8>) -> Vec<Point> {
         .collect()
 }
 
-fn trace_basin(grid: &Grid<u8>, start: &Point) -> usize {
+fn trace_basin(grid: &Grid<u8>, start: &GPoint) -> usize {
     let mut seen = HashSet::new();
 
     let mut frontier = VecDeque::new();

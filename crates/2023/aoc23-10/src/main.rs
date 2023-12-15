@@ -3,7 +3,7 @@ use std::mem::swap;
 
 use itertools::Itertools;
 
-use hymns::grid::Grid;
+use hymns::grid::{GPoint, Grid};
 use hymns::p2;
 use hymns::runner::timed_run;
 use hymns::vector2::Point2;
@@ -13,7 +13,6 @@ use self::Tile::*;
 
 const INPUT: &str = include_str!("../input.txt");
 
-type Point = Point2<usize>;
 type Scan = Grid<Tile>;
 
 #[derive(Debug, Copy, Clone)]
@@ -75,7 +74,7 @@ impl Direction {
     }
 }
 
-fn neighbors_and_origin_dirs(point: &Point) -> Vec<(Direction, Point)> {
+fn neighbors_and_origin_dirs(point: &GPoint) -> Vec<(Direction, GPoint)> {
     let x = point.x;
     let y = point.y;
 
@@ -87,7 +86,7 @@ fn neighbors_and_origin_dirs(point: &Point) -> Vec<(Direction, Point)> {
     ]
 }
 
-fn accessible_neighbors(scan: &Scan, point: &Point) -> Vec<Point> {
+fn accessible_neighbors(scan: &Scan, point: &GPoint) -> Vec<GPoint> {
     let movements = [
         (South, p2!(point.x, point.y.wrapping_sub(1))),
         (North, p2!(point.x, point.y + 1)),
@@ -111,7 +110,7 @@ fn accessible_neighbors(scan: &Scan, point: &Point) -> Vec<Point> {
         .collect_vec()
 }
 
-fn find_pipe(start: &Point, grid: &Scan) -> (usize, HashSet<Point>) {
+fn find_pipe(start: &GPoint, grid: &Scan) -> (usize, HashSet<GPoint>) {
     let mut seen = HashSet::new();
     let mut distance = 0;
     let mut frontier = vec![*start];
@@ -136,7 +135,7 @@ fn find_pipe(start: &Point, grid: &Scan) -> (usize, HashSet<Point>) {
     (distance - 1, seen)
 }
 
-fn load_grid() -> (Point, Scan) {
+fn load_grid() -> (GPoint, Scan) {
     let grid = INPUT
         .lines()
         .map(|line| line.chars().collect_vec())
@@ -183,7 +182,7 @@ fn load_grid() -> (Point, Scan) {
     (start.unwrap(), Grid::new(tiles))
 }
 
-fn count_diagonal(start: &Point, grid: &Scan, pipe: &HashSet<Point>) -> usize {
+fn count_diagonal(start: &GPoint, grid: &Scan, pipe: &HashSet<GPoint>) -> usize {
     let mut count = 0;
     let mut inside = false;
 

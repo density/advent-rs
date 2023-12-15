@@ -1,13 +1,12 @@
 use std::collections::{HashSet, VecDeque};
 
-use hymns::grid::Grid;
+use hymns::grid::{GPoint, Grid};
 use hymns::p2;
 use hymns::runner::timed_run;
 use hymns::vector2::Point2;
-
 const INPUT: &str = include_str!("../input.txt");
 
-fn build_grid(start: &mut Point2<usize>, end: &mut Point2<usize>) -> Grid<u8> {
+fn build_grid(start: &mut GPoint, end: &mut GPoint) -> Grid<u8> {
     Grid::new(
         INPUT
             .lines()

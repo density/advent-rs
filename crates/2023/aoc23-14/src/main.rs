@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
-use hymns::grid::Grid;
+use hymns::grid::{GPoint, Grid};
 use hymns::p2;
 use hymns::runner::timed_run;
 use hymns::vector2::Point2;
@@ -11,7 +11,6 @@ use crate::Surface::{Cube, Empty, Rounded};
 
 const INPUT: &str = include_str!("../input.txt");
 
-type Point = Point2<usize>;
 type Dish = Grid<Surface>;
 
 #[derive(Eq, PartialEq, Hash, Copy, Clone)]
@@ -54,8 +53,8 @@ impl From<char> for Surface {
 fn move_point<'a>(
     direction: Direction,
     grid: &'a Dish,
-    point: &'a Point,
-) -> Box<dyn Iterator<Item = Point> + 'a> {
+    point: &'a GPoint,
+) -> Box<dyn Iterator<Item = GPoint> + 'a> {
     match direction {
         North => Box::new((0..point.y).rev().map(|row| p2!(point.x, row))),
         South => Box::new(((point.y + 1)..grid.rows()).map(|row| p2!(point.x, row))),

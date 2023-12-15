@@ -6,6 +6,8 @@ use std::hash::{Hash, Hasher};
 use std::ops::{Index, IndexMut};
 use std::str::FromStr;
 
+pub type GPoint = Point2<usize>;
+
 #[derive(Eq, PartialEq, Clone)]
 pub struct Grid<T> {
     elems: Vec<Vec<T>>,
@@ -24,7 +26,7 @@ impl<T> Grid<T> {
     }
 
     #[must_use]
-    pub fn contains(&self, point: Point2<usize>) -> bool {
+    pub fn contains(&self, point: GPoint) -> bool {
         point.y < self.rows() && point.x < self.cols()
     }
 
@@ -75,15 +77,15 @@ impl<T> Grid<T> {
         })
     }
 
-    pub fn iter_points(&self) -> impl Iterator<Item = Point2<usize>> + '_ {
+    pub fn iter_points(&self) -> impl Iterator<Item = GPoint> + '_ {
         (0..self.rows()).flat_map(|y| (0..self.cols()).map(move |x| p2!(x, y)))
     }
 
-    pub fn iter_points_values(&self) -> impl Iterator<Item = (Point2<usize>, &T)> + '_ {
+    pub fn iter_points_values(&self) -> impl Iterator<Item = (GPoint, &T)> + '_ {
         self.iter_points().map(|p| (p, &self[p]))
     }
 
-    pub fn into_iter_points_values(self) -> impl Iterator<Item = (Point2<usize>, T)> {
+    pub fn into_iter_points_values(self) -> impl Iterator<Item = (GPoint, T)> {
         let cols = self.cols();
 
         self.into_iter_values().enumerate().map(move |(i, val)| {
@@ -94,20 +96,20 @@ impl<T> Grid<T> {
     }
 
     #[must_use]
-    pub fn get_value(&self, p: &Point2<usize>) -> Option<&T> {
+    pub fn get_value(&self, p: &GPoint) -> Option<&T> {
         self.elems.get(p.y).and_then(|row| row.get(p.x))
     }
 
-    pub fn get_value_mut(&mut self, p: &Point2<usize>) -> Option<&mut T> {
+    pub fn get_value_mut(&mut self, p: &GPoint) -> Option<&mut T> {
         self.elems.get_mut(p.y).and_then(|row| row.get_mut(p.x))
     }
 
-    pub fn set_value(&mut self, p: &Point2<usize>, val: T) {
+    pub fn set_value(&mut self, p: &GPoint, val: T) {
         self.elems[p.y][p.x] = val;
     }
 
     #[must_use]
-    pub fn neighbor_coords(&self, p: &Point2<usize>, extended: bool) -> Vec<Point2<usize>> {
+    pub fn neighbor_coords(&self, p: &GPoint, extended: bool) -> Vec<GPoint> {
         let mut neighbors = p.unsigned_neighbors(extended, false);
         neighbors.retain(|p| p.y < self.rows() && p.x < self.cols());
         neighbors
@@ -115,9 +117,9 @@ impl<T> Grid<T> {
 
     pub fn iter_neighbors(
         &self,
-        point2: &Point2<usize>,
+        point2: &GPoint,
         extended: bool,
-    ) -> impl Iterator<Item = (Point2<usize>, &T)> + '_ {
+    ) -> impl Iterator<Item = (GPoint, &T)> + '_ {
         self.neighbor_coords(point2, extended)
             .into_iter()
             .map(move |p| (p, &self[p]))
@@ -205,16 +207,16 @@ where
     }
 }
 
-impl<T> Index<Point2<usize>> for Grid<T> {
+impl<T> Index<GPoint> for Grid<T> {
     type Output = T;
 
-    fn index(&self, p: Point2<usize>) -> &Self::Output {
+    fn index(&self, p: GPoint) -> &Self::Output {
         &self.elems[p.y][p.x]
     }
 }
 
-impl<T> IndexMut<Point2<usize>> for Grid<T> {
-    fn index_mut(&mut self, p: Point2<usize>) -> &mut Self::Output {
+impl<T> IndexMut<GPoint> for Grid<T> {
+    fn index_mut(&mut self, p: GPoint) -> &mut Self::Output {
         &mut self.elems[p.y][p.x]
     }
 }
@@ -224,7 +226,7 @@ mod tests {
     use super::*;
     type GridRow = Vec<i32>;
     type GridVec = Vec<GridRow>;
-    type Points = Vec<Point2<usize>>;
+    type Points = Vec<GPoint>;
 
     #[test]
     fn test_basic() {
