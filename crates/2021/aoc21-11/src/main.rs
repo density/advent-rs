@@ -20,7 +20,7 @@ fn step(grid: &mut Grid<u8>) -> usize {
             if *energy > 9 && !flash_points.contains(&point) {
                 flash_points.insert(point);
                 flashed_or_affected_points.push(point);
-                flashed_or_affected_points.extend(grid.neighbor_coords(&point, true));
+                flashed_or_affected_points.extend(grid.all_neighbors(&point, true));
             }
         }
 

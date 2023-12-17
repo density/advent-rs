@@ -10,7 +10,7 @@ fn find_low_points(grid: &Grid<u8>) -> Vec<GPoint> {
     grid.iter_points_values()
         .filter_map(|(point, height)| {
             if grid
-                .neighbor_coords(&point, false)
+                .all_neighbors(&point, false)
                 .into_iter()
                 .all(|p| grid[p] > *height)
             {
@@ -31,7 +31,7 @@ fn trace_basin(grid: &Grid<u8>, start: &GPoint) -> usize {
     while let Some(current) = frontier.pop_front() {
         seen.insert(current);
 
-        for neighbor in grid.neighbor_coords(&current, false) {
+        for neighbor in grid.all_neighbors(&current, false) {
             if grid[neighbor] != 9 && !seen.contains(&neighbor) {
                 frontier.push_back(neighbor);
             }

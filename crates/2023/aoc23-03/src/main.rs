@@ -81,7 +81,7 @@ fn part1() -> u64 {
         .iter_points_values()
         .filter(|(_, c)| !c.is_ascii_digit() && **c != '.')
     {
-        for neigh in grid.neighbor_coords(&point, true) {
+        for neigh in grid.all_neighbors(&point, true) {
             if let Some(part) = parts
                 .iter()
                 .find(|part| part.row == neigh.y && part.cols.contains(&neigh.x))
@@ -106,7 +106,7 @@ fn part2() -> u64 {
 
     for (point, _) in grid.iter_points_values().filter(|(_, c)| c == &&'*') {
         let neighbor_parts: HashSet<Part> = grid
-            .neighbor_coords(&point, true)
+            .all_neighbors(&point, true)
             .iter()
             .filter_map(|neigh| {
                 part_numbers

@@ -137,7 +137,7 @@ impl Valley {
 
     fn moves_at_timestamp(&self, ts: Timestamp, from_location: Point) -> Vec<Point> {
         let ts = ts % self.states.len();
-        let mut result = from_location.unsigned_neighbors(false, true);
+        let mut result = from_location.all_neighbors(false, true);
 
         result.retain(|p| {
             *p == self.start

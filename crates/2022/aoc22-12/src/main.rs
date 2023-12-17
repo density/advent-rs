@@ -52,7 +52,7 @@ fn part1() -> u64 {
             continue;
         }
 
-        for neighbor in grid.neighbor_coords(&point, false) {
+        for neighbor in grid.all_neighbors(&point, false) {
             if grid[neighbor] <= grid[point] + 1 {
                 queue.push_back((distance + 1, neighbor));
             }
@@ -81,7 +81,7 @@ fn part2() -> u64 {
             continue;
         }
 
-        for neighbor in grid.neighbor_coords(&point, false) {
+        for neighbor in grid.all_neighbors(&point, false) {
             if grid[point] <= grid[neighbor] + 1 {
                 queue.push_back((distance + 1, neighbor));
             }

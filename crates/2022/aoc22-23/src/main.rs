@@ -53,7 +53,11 @@ fn calc_moves(grid: &Grid, ts: usize) -> Grid {
 
     // map each point to new point
     'elf: for elf in grid.iter().copied() {
-        if elf.neighbors(true, false).iter().all(|p| !grid.contains(p)) {
+        if elf
+            .all_neighbors(true, false)
+            .iter()
+            .all(|p| !grid.contains(p))
+        {
             // no neighbors - do nothing
             old_point_to_new_point.insert(elf, elf);
             continue;

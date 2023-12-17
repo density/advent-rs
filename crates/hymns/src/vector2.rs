@@ -2,6 +2,12 @@ use std::mem;
 use std::ops::{Add, AddAssign, Mul};
 
 use num_traits::{PrimInt, Signed};
+use Direction::{Down, DownLeft, DownRight, Left, Right, Up, UpLeft, UpRight};
+
+const FOUR_NEIGHBORS: [Direction; 4] = [Up, Down, Left, Right];
+
+const EIGHT_NEIGHBORS: [Direction; 8] =
+    [Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft];
 
 #[macro_export]
 macro_rules! p2 {
@@ -17,6 +23,33 @@ pub enum Rotation {
     Left90,
 }
 
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
+pub enum Direction {
+    Up,
+    UpRight,
+    Right,
+    DownRight,
+    Down,
+    DownLeft,
+    Left,
+    UpLeft,
+}
+
+impl Direction {
+    fn inverted(self) -> Self {
+        match self {
+            Up => Down,
+            UpRight => DownLeft,
+            Right => Left,
+            DownRight => UpLeft,
+            Down => Up,
+            DownLeft => UpRight,
+            Left => Right,
+            UpLeft => DownRight,
+        }
+    }
+}
+
 #[derive(Debug, Eq, PartialEq, Hash, Default, Copy, Clone)]
 pub struct Point2<T: PrimInt + AddAssign> {
     pub x: T,
@@ -26,6 +59,45 @@ pub struct Point2<T: PrimInt + AddAssign> {
 impl<T: PrimInt + AddAssign> Point2<T> {
     pub const fn new(x: T, y: T) -> Self {
         Self { x, y }
+    }
+}
+
+impl<T: PrimInt + AddAssign> Point2<T> {
+    pub fn shifted(&self, shift: Direction) -> Option<Point2<T>> {
+        match shift {
+            Up => self
+                .y
+                .checked_sub(&T::one())
+                .map(|y| Point2 { x: self.x, y }),
+            UpRight => self.y.checked_sub(&T::one()).map(|y| Point2 {
+                x: self.x.add(T::one()),
+                y,
+            }),
+            Right => Some(Point2 {
+                x: self.x.add(T::one()),
+                y: self.y,
+            }),
+            DownRight => Some(Point2 {
+                x: self.x.add(T::one()),
+                y: self.y.add(T::one()),
+            }),
+            Down => Some(Point2 {
+                x: self.x,
+                y: self.y.add(T::one()),
+            }),
+            DownLeft => self.x.checked_sub(&T::one()).map(|x| Point2 {
+                x,
+                y: self.y.add(T::one()),
+            }),
+            Left => self
+                .x
+                .checked_sub(&T::one())
+                .map(|x| Point2 { x, y: self.y }),
+            UpLeft => match self.x.checked_sub(&T::one()) {
+                Some(x) => self.y.checked_sub(&T::one()).map(|y| Point2 { x, y }),
+                None => None,
+            },
+        }
     }
 }
 
@@ -76,24 +148,20 @@ impl<T: PrimInt + AddAssign> Point2<T> {
         self.x.max(other.x) - self.x.min(other.x) + self.y.max(other.y) - self.y.min(other.y)
     }
 
-    pub fn neighbors(&self, extended: bool, include_self: bool) -> Vec<Point2<T>> {
-        let mut neighbors = Vec::with_capacity(if extended { 8 } else { 4 });
+    pub fn all_neighbors(&self, extended: bool, include_self: bool) -> Vec<Point2<T>> {
+        // capacity is 8, 9, 4 or 5 depending on arguments
+        let mut capacity = if extended { 8 } else { 4 };
+        if include_self {
+            capacity += 1;
+        }
 
-        neighbors.append(&mut vec![
-            Point2::new(self.x - T::one(), self.y),
-            Point2::new(self.x + T::one(), self.y),
-            Point2::new(self.x, self.y - T::one()),
-            Point2::new(self.x, self.y + T::one()),
-        ]);
+        let mut neighbors = Vec::with_capacity(capacity);
 
         if extended {
-            neighbors.append(&mut vec![
-                Point2::new(self.x - T::one(), self.y - T::one()),
-                Point2::new(self.x - T::one(), self.y + T::one()),
-                Point2::new(self.x + T::one(), self.y - T::one()),
-                Point2::new(self.x + T::one(), self.y + T::one()),
-            ]);
-        }
+            neighbors.append(&mut self.get_neighbors(&EIGHT_NEIGHBORS));
+        } else {
+            neighbors.append(&mut self.get_neighbors(&FOUR_NEIGHBORS));
+        };
 
         if include_self {
             neighbors.push(*self);
@@ -102,39 +170,10 @@ impl<T: PrimInt + AddAssign> Point2<T> {
         neighbors
     }
 
-    pub fn unsigned_neighbors(&self, extended: bool, include_self: bool) -> Vec<Point2<T>> {
-        let x_minus_one = self.x.checked_sub(&T::one());
-        let y_minus_one = self.y.checked_sub(&T::one());
-        let x_plus_one = Some(self.x + T::one());
-        let y_plus_one = Some(self.y + T::one());
-
-        let mut neighbors = vec![
-            (x_minus_one, Some(self.y)),
-            ((x_plus_one), Some(self.y)),
-            (Some(self.x), y_minus_one),
-            (Some(self.x), y_plus_one),
-        ];
-
-        if extended {
-            neighbors.extend(vec![
-                (x_minus_one, y_minus_one),
-                (x_minus_one, y_plus_one),
-                (x_plus_one, y_minus_one),
-                (x_plus_one, y_plus_one),
-            ]);
-        }
-
-        if include_self {
-            neighbors.push((Some(self.x), Some(self.y)));
-        }
-
+    pub fn get_neighbors(&self, directions: &[Direction]) -> Vec<Point2<T>> {
+        let mut neighbors = Vec::with_capacity(directions.len());
+        neighbors.extend(directions.iter().filter_map(|shift| self.shifted(*shift)));
         neighbors
-            .into_iter()
-            .filter_map(|(x, y)| match (x, y) {
-                (Some(x), Some(y)) => Some(p2!(x, y)),
-                _ => None,
-            })
-            .collect()
     }
 }
 
@@ -161,40 +200,26 @@ mod tests {
         let p = Point2::default();
 
         assert_eq!(
-            p.neighbors(false, false),
-            vec![p2!(-1, 0), p2!(1, 0), p2!(0, -1), p2!(0, 1),]
+            p.all_neighbors(false, false),
+            vec![p2!(0, -1), p2!(0, 1), p2!(-1, 0), p2!(1, 0),]
         );
 
         let p = p2!(1, 1);
 
         assert_eq!(
-            p.neighbors(false, false),
-            vec![p2!(0, 1), p2!(2, 1), p2!(1, 0), p2!(1, 2)]
+            p.all_neighbors(false, false),
+            vec![p2!(1, 0), p2!(1, 2), p2!(0, 1), p2!(2, 1),]
         );
 
         let p = p2!(1, 1);
 
         assert_eq!(
-            p.neighbors(false, true),
-            vec![p2!(0, 1), p2!(2, 1), p2!(1, 0), p2!(1, 2), p2!(1, 1)]
-        );
-    }
-
-    #[test]
-    fn test_unsigned_neighbors() {
-        let p: Point2<usize> = Point2::default();
-
-        assert_eq!(
-            p.unsigned_neighbors(false, false),
-            vec![p2!(1, 0), p2!(0, 1),]
+            p.all_neighbors(false, true),
+            vec![p2!(1, 0), p2!(1, 2), p2!(0, 1), p2!(2, 1), p2!(1, 1)]
         );
 
         let p = p2!(1, 1);
-
-        assert_eq!(
-            p.unsigned_neighbors(false, false),
-            p.neighbors(false, false)
-        );
+        assert_eq!(p.get_neighbors(&[Up, Down]), vec![p2!(1, 0), p2!(1, 2)]);
     }
 
     #[test]
@@ -202,51 +227,33 @@ mod tests {
         let p = Point2::default();
 
         assert_eq!(
-            p.neighbors(true, false),
+            p.all_neighbors(true, false),
             vec![
-                p2!(-1, 0),
-                p2!(1, 0),
                 p2!(0, -1),
-                p2!(0, 1),
-                p2!(-1, -1),
-                p2!(-1, 1),
                 p2!(1, -1),
+                p2!(1, 0),
                 p2!(1, 1),
+                p2!(0, 1),
+                p2!(-1, 1),
+                p2!(-1, 0),
+                p2!(-1, -1),
             ]
         );
 
         let p = p2!(1, 1);
 
         assert_eq!(
-            p.neighbors(true, false),
+            p.all_neighbors(true, false),
             vec![
-                p2!(0, 1),
-                p2!(2, 1),
                 p2!(1, 0),
-                p2!(1, 2),
-                p2!(0, 0),
-                p2!(0, 2),
                 p2!(2, 0),
+                p2!(2, 1),
                 p2!(2, 2),
+                p2!(1, 2),
+                p2!(0, 2),
+                p2!(0, 1),
+                p2!(0, 0),
             ]
         );
-    }
-
-    #[test]
-    fn test_unsigned_extended_neighbors() {
-        let p: Point2<usize> = Point2::default();
-
-        assert_eq!(
-            p.unsigned_neighbors(true, false),
-            vec![p2!(1, 0), p2!(0, 1), p2!(1, 1),]
-        );
-
-        let p: Point2<usize> = p2!(1, 1);
-
-        assert_eq!(p.unsigned_neighbors(true, false), p.neighbors(true, false));
-
-        let p: Point2<usize> = p2!(1, 1);
-
-        assert_eq!(p.unsigned_neighbors(true, true), p.neighbors(true, true));
     }
 }

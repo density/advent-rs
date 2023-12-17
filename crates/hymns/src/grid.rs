@@ -6,7 +6,7 @@ use std::str::FromStr;
 use itertools::Itertools;
 
 use crate::p2;
-use crate::vector2::Point2;
+use crate::vector2::{Direction, Point2};
 
 pub type GPoint = Point2<usize>;
 
@@ -111,20 +111,37 @@ impl<T> Grid<T> {
     }
 
     #[must_use]
-    pub fn neighbor_coords(&self, p: &GPoint, extended: bool) -> Vec<GPoint> {
-        let mut neighbors = p.unsigned_neighbors(extended, false);
+    pub fn all_neighbors(&self, p: &GPoint, extended: bool) -> Vec<GPoint> {
+        let mut neighbors = p.all_neighbors(extended, false);
         neighbors.retain(|p| p.y < self.rows() && p.x < self.cols());
         neighbors
     }
 
-    pub fn iter_neighbors(
+    pub fn iter_all_neighbors(
         &self,
         point2: &GPoint,
         extended: bool,
     ) -> impl Iterator<Item = (GPoint, &T)> + '_ {
-        self.neighbor_coords(point2, extended)
+        self.all_neighbors(point2, extended)
             .into_iter()
             .map(move |p| (p, &self[p]))
+    }
+
+    #[must_use]
+    pub fn get_neighbors(&self, p: &GPoint, directions: &[Direction]) -> Vec<GPoint> {
+        let mut neighbors = Vec::with_capacity(directions.len());
+
+        neighbors.extend(directions.iter().filter_map(|shift| {
+            p.shifted(*shift)
+                .filter(|p| p.y < self.rows() && p.x < self.cols())
+        }));
+
+        neighbors
+    }
+
+    #[must_use]
+    pub fn get_neighbor(&self, p: &GPoint, direction: Direction) -> Option<GPoint> {
+        self.get_neighbors(p, &[direction]).first().copied()
     }
 }
 
@@ -217,6 +234,7 @@ impl<T> IndexMut<GPoint> for Grid<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::vector2::Direction::{Down, DownRight, Up};
 
     type GridRow = Vec<i32>;
     type GridVec = Vec<GridRow>;
@@ -359,51 +377,58 @@ mod tests {
         let g = Grid::new(vec![vec![0, 1, 2], vec![3, 4, 5], vec![6, 7, 8]]);
 
         assert_eq!(
-            g.neighbor_coords(&p2!(0, 0), false),
-            vec![p2!(1, 0), p2!(0, 1)]
+            g.all_neighbors(&p2!(0, 0), false),
+            vec![p2!(0, 1), p2!(1, 0)]
         );
         assert_eq!(
-            g.neighbor_coords(&p2!(0, 0), true),
-            vec![p2!(1, 0), p2!(0, 1), p2!(1, 1)]
+            g.all_neighbors(&p2!(0, 0), true),
+            vec![p2!(1, 0), p2!(1, 1), p2!(0, 1)]
         );
         assert_eq!(
-            g.neighbor_coords(&p2!(1, 1), false),
-            vec![p2!(0, 1), p2!(2, 1), p2!(1, 0), p2!(1, 2)]
+            g.all_neighbors(&p2!(1, 1), false),
+            vec![p2!(1, 0), p2!(1, 2), p2!(0, 1), p2!(2, 1)]
         );
         assert_eq!(
-            g.neighbor_coords(&p2!(1, 1), true),
+            g.all_neighbors(&p2!(1, 1), true),
             vec![
-                p2!(0, 1),
-                p2!(2, 1),
                 p2!(1, 0),
-                p2!(1, 2),
-                p2!(0, 0),
-                p2!(0, 2),
                 p2!(2, 0),
+                p2!(2, 1),
                 p2!(2, 2),
+                p2!(1, 2),
+                p2!(0, 2),
+                p2!(0, 1),
+                p2!(0, 0),
             ]
         );
 
         assert_eq!(
-            g.iter_neighbors(&p2!(1, 1), false).collect::<Vec<_>>(),
+            g.get_neighbors(&p2!(0, 0), &[Up, DownRight, Down]),
+            vec![p2!(1, 1), p2!(0, 1)]
+        );
+        assert_eq!(g.get_neighbor(&p2!(0, 0), Down), Some(p2!(0, 1)));
+        assert_eq!(g.get_neighbor(&p2!(0, 0), Up), None);
+
+        assert_eq!(
+            g.iter_all_neighbors(&p2!(1, 1), false).collect::<Vec<_>>(),
             vec![
-                (p2!(0, 1), &3),
-                (p2!(2, 1), &5),
                 (p2!(1, 0), &1),
                 (p2!(1, 2), &7),
+                (p2!(0, 1), &3),
+                (p2!(2, 1), &5),
             ]
         );
         assert_eq!(
-            g.iter_neighbors(&p2!(1, 1), true).collect::<Vec<_>>(),
+            g.iter_all_neighbors(&p2!(1, 1), true).collect::<Vec<_>>(),
             vec![
-                (p2!(0, 1), &3),
-                (p2!(2, 1), &5),
                 (p2!(1, 0), &1),
-                (p2!(1, 2), &7),
-                (p2!(0, 0), &0),
-                (p2!(0, 2), &6),
                 (p2!(2, 0), &2),
+                (p2!(2, 1), &5),
                 (p2!(2, 2), &8),
+                (p2!(1, 2), &7),
+                (p2!(0, 2), &6),
+                (p2!(0, 1), &3),
+                (p2!(0, 0), &0),
             ]
         );
     }
