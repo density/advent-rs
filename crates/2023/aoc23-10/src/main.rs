@@ -6,10 +6,10 @@ use itertools::Itertools;
 use hymns::grid::{GPoint, Grid};
 use hymns::p2;
 use hymns::runner::timed_run;
-use hymns::vector2::Point2;
+use hymns::vector2::{Direction, Point2};
 
-use self::Direction::*;
-use self::Tile::*;
+use self::Direction::{Down, Left, Right, Up};
+use self::Tile::{DownLeft, DownRight, Ground, RightLeft, UpDown, UpLeft, UpRight};
 
 const INPUT: &str = include_str!("../input.txt");
 
@@ -17,24 +17,24 @@ type Scan = Grid<Tile>;
 
 #[derive(Debug, Copy, Clone)]
 enum Tile {
-    NorthSouth,
-    EastWest,
-    NorthEast,
-    NorthWest,
-    SouthEast,
-    SouthWest,
+    UpDown,
+    RightLeft,
+    UpRight,
+    UpLeft,
+    DownRight,
+    DownLeft,
     Ground,
 }
 
 impl Tile {
-    fn is_accessible_from(&self, direction: Direction) -> bool {
+    fn is_accessible_from(self, direction: Direction) -> bool {
         match self {
-            NorthSouth => direction == North || direction == South,
-            EastWest => direction == East || direction == West,
-            NorthEast => direction == North || direction == East,
-            NorthWest => direction == North || direction == West,
-            SouthEast => direction == South || direction == East,
-            SouthWest => direction == South || direction == West,
+            UpDown => direction == Up || direction == Down,
+            RightLeft => direction == Right || direction == Left,
+            UpRight => direction == Up || direction == Right,
+            UpLeft => direction == Up || direction == Left,
+            DownRight => direction == Down || direction == Right,
+            DownLeft => direction == Down || direction == Left,
             Ground => false,
         }
     }
@@ -43,33 +43,14 @@ impl Tile {
 impl From<char> for Tile {
     fn from(value: char) -> Self {
         match value {
-            '|' => NorthSouth,
-            '-' => EastWest,
-            'L' => NorthEast,
-            'J' => NorthWest,
-            '7' => SouthWest,
-            'F' => SouthEast,
+            '|' => UpDown,
+            '-' => RightLeft,
+            'L' => UpRight,
+            'J' => UpLeft,
+            '7' => DownLeft,
+            'F' => DownRight,
             '.' => Ground,
             _ => unreachable!(),
-        }
-    }
-}
-
-#[derive(Copy, Clone, Eq, Debug, PartialEq)]
-enum Direction {
-    North,
-    South,
-    East,
-    West,
-}
-
-impl Direction {
-    fn inverted(&self) -> Self {
-        match self {
-            North => South,
-            South => North,
-            East => West,
-            West => East,
         }
     }
 }
@@ -79,19 +60,19 @@ fn neighbors_and_origin_dirs(point: &GPoint) -> Vec<(Direction, GPoint)> {
     let y = point.y;
 
     vec![
-        (South, p2!(x, y.wrapping_sub(1))),
-        (North, p2!(x, y + 1)),
-        (West, p2!(x + 1, y)),
-        (East, p2!(x.wrapping_sub(1), y)),
+        (Down, p2!(x, y.wrapping_sub(1))),
+        (Up, p2!(x, y + 1)),
+        (Left, p2!(x + 1, y)),
+        (Right, p2!(x.wrapping_sub(1), y)),
     ]
 }
 
 fn accessible_neighbors(scan: &Scan, point: &GPoint) -> Vec<GPoint> {
     let movements = [
-        (South, p2!(point.x, point.y.wrapping_sub(1))),
-        (North, p2!(point.x, point.y + 1)),
-        (West, p2!(point.x + 1, point.y)),
-        (East, p2!(point.x.wrapping_sub(1), point.y)),
+        (Down, p2!(point.x, point.y.wrapping_sub(1))),
+        (Up, p2!(point.x, point.y + 1)),
+        (Left, p2!(point.x + 1, point.y)),
+        (Right, p2!(point.x.wrapping_sub(1), point.y)),
     ];
 
     movements
@@ -165,14 +146,14 @@ fn load_grid() -> (GPoint, Scan) {
                     .unwrap();
 
                 tiles[y].push(match (dir1, dir2) {
-                    (North, South) | (South, North) => NorthSouth,
-                    (East, West) | (West, East) => EastWest,
-                    (North, East) | (East, North) => NorthEast,
-                    (North, West) | (West, North) => NorthWest,
-                    (South, East) | (East, South) => SouthEast,
-                    (South, West) | (West, South) => SouthWest,
+                    (Up, Down) | (Down, Up) => UpDown,
+                    (Right, Left) | (Left, Right) => RightLeft,
+                    (Up, Right) | (Right, Up) => UpRight,
+                    (Up, Left) | (Left, Up) => UpLeft,
+                    (Down, Right) | (Right, Down) => DownRight,
+                    (Down, Left) | (Left, Down) => DownLeft,
                     _ => unreachable!(),
-                })
+                });
             } else {
                 tiles[y].push(Tile::from(grid[y][x]));
             }
@@ -190,7 +171,7 @@ fn count_diagonal(start: &GPoint, grid: &Scan, pipe: &HashSet<GPoint>) -> usize 
         let point = p2!(col, row);
 
         if pipe.contains(&point) {
-            if !matches!(grid[point], NorthEast | SouthWest) {
+            if !matches!(grid[point], UpRight | DownLeft) {
                 inside = !inside;
             }
         } else if inside {

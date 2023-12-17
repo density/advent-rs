@@ -4,9 +4,9 @@ use std::ops::{Add, AddAssign, Mul};
 use num_traits::{PrimInt, Signed};
 use Direction::{Down, DownLeft, DownRight, Left, Right, Up, UpLeft, UpRight};
 
-const FOUR_NEIGHBORS: [Direction; 4] = [Up, Down, Left, Right];
+pub const FOUR_NEIGHBORS: [Direction; 4] = [Up, Down, Left, Right];
 
-const EIGHT_NEIGHBORS: [Direction; 8] =
+pub const EIGHT_NEIGHBORS: [Direction; 8] =
     [Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft];
 
 #[macro_export]
@@ -36,7 +36,8 @@ pub enum Direction {
 }
 
 impl Direction {
-    fn inverted(self) -> Self {
+    #[must_use]
+    pub fn inverted(self) -> Self {
         match self {
             Up => Down,
             UpRight => DownLeft,
