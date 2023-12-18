@@ -1,6 +1,6 @@
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
-use std::hash::Hash;
+use std::hash::{BuildHasher, Hash};
 
 pub trait Invertible<K, V>
 where
@@ -13,7 +13,7 @@ where
     fn inverted_with_dupes(&self) -> HashMap<&V, Vec<&K>>;
 }
 
-impl<K, V> Invertible<K, V> for HashMap<K, V>
+impl<K, V, S: BuildHasher> Invertible<K, V> for HashMap<K, V, S>
 where
     Self: Sized,
     K: Hash + Eq,

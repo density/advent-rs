@@ -1,8 +1,9 @@
 pub mod all_equal;
 pub mod default_map;
+pub mod geom;
 pub mod grid;
 pub mod input;
-mod invert_map;
+pub mod invert_map;
 pub mod math;
 pub mod more_itertools;
 pub mod pathfinding;
