@@ -7,12 +7,14 @@ use hymns::vector2::Point2;
 const INPUT: &str = include_str!("../input.txt");
 
 fn get_least_total_risk_path(grid: &Grid<u8>) -> usize {
+    let goal = p2!(grid.cols() - 1, grid.rows() - 1);
+
     let (_, cost) = a_star(
-        &p2!(0, 0),
-        &p2!(grid.cols() - 1, grid.rows() - 1),
+        &[GPoint::origin()],
+        |p| *p == goal,
         |_, p2| usize::from(grid[*p2]),
         |p| grid.all_neighbors(p, false),
-        GPoint::manhattan_dist,
+        |p| p.manhattan_dist(&goal),
     )
     .unwrap();
 

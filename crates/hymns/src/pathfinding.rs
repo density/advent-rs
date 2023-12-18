@@ -1,58 +1,60 @@
 use std::cmp::Reverse;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::hash::Hash;
 
 use priority_queue::PriorityQueue;
 
 fn reconstruct_path<State, GetCost>(
     get_cost: GetCost,
-    came_from: &HashMap<State, State>,
-    end: &State,
+    mut came_from: HashMap<State, State>,
+    end: State,
 ) -> (Vec<State>, usize)
 where
     State: Hash + Eq + Clone,
     GetCost: Fn(&State, &State) -> usize,
 {
-    let mut result = vec![end.clone()];
+    let mut result = VecDeque::new();
     let mut cost = 0;
 
     let mut current = end;
 
-    while let Some(next) = came_from.get(current) {
-        cost += get_cost(next, current);
+    while let Some(next) = came_from.remove(&current) {
+        cost += get_cost(&next, &current);
+        result.push_front(current);
         current = next;
-        result.push(current.clone());
     }
+    result.push_front(current);
 
-    result.reverse();
-    (result, cost)
+    (result.into(), cost)
 }
 
 // https://en.wikipedia.org/wiki/A*_search_algorithm
-pub fn a_star<State, NextStateFn, HeuristicFn, CostFn>(
-    start: &State,
-    goal: &State,
+pub fn a_star<State, NextStateFn, HeuristicFn, CostFn, GoalFn>(
+    starts: &[State],
+    is_goal: GoalFn,
     get_cost: CostFn,
     get_next_states: NextStateFn,
     heuristic_fn: HeuristicFn,
 ) -> Option<(Vec<State>, usize)>
 where
     State: Hash + Eq + Clone,
+    GoalFn: Fn(&State) -> bool,
     NextStateFn: Fn(&State) -> Vec<State>,
-    HeuristicFn: Fn(&State, &State) -> usize,
+    HeuristicFn: Fn(&State) -> usize,
     CostFn: Fn(&State, &State) -> usize,
 {
     let mut open_set = PriorityQueue::new();
-    open_set.push(start.clone(), Reverse(0));
-
     let mut came_from = HashMap::new();
-
     let mut g_score = HashMap::new();
-    g_score.insert(start.clone(), 0_usize);
+
+    for start in starts {
+        open_set.push(start.clone(), Reverse(0));
+        g_score.insert(start.clone(), 0_usize);
+    }
 
     while let Some((current, _)) = open_set.pop() {
-        if current == *goal {
-            return Some(reconstruct_path(get_cost, &came_from, &current));
+        if is_goal(&current) {
+            return Some(reconstruct_path(get_cost, came_from, current));
         }
 
         for neigh in get_next_states(&current) {
@@ -62,7 +64,7 @@ where
                 came_from.insert(neigh.clone(), current.clone());
                 g_score.insert(neigh.clone(), tentative_g_score);
 
-                let f_score = tentative_g_score + heuristic_fn(&neigh, goal);
+                let f_score = tentative_g_score + heuristic_fn(&neigh);
                 if open_set.change_priority(&neigh, Reverse(f_score)).is_none() {
                     open_set.push(neigh, Reverse(f_score));
                 }
@@ -81,16 +83,18 @@ mod tests {
     use crate::vector2::Point2;
 
     #[test]
-    fn test_basic_generic() {
+    fn test_basic() {
         let grid = vec![vec![10, 1, 1], vec![9, 50, 9], vec![1, 1, 3]];
         let grid: Grid<u8> = Grid::new(grid);
 
+        let goal = p2!(grid.cols() - 1, grid.rows() - 1);
+
         let (path, cost) = a_star(
-            &GPoint::default(),
-            &p2!(grid.cols() - 1, grid.rows() - 1),
+            &[GPoint::default()],
+            |p| *p == goal,
             |_, dst| usize::from(grid[*dst]),
             |state| grid.all_neighbors(state, false),
-            GPoint::manhattan_dist,
+            |p| p.manhattan_dist(&goal),
         )
         .unwrap();
 

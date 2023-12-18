@@ -61,9 +61,15 @@ impl<T: PrimInt + AddAssign> Point2<T> {
     pub const fn new(x: T, y: T) -> Self {
         Self { x, y }
     }
-}
 
-impl<T: PrimInt + AddAssign> Point2<T> {
+    #[must_use]
+    pub fn origin() -> Self {
+        Self {
+            x: T::zero(),
+            y: T::zero(),
+        }
+    }
+
     pub fn shifted(&self, shift: Direction) -> Option<Point2<T>> {
         match shift {
             Up => self
