@@ -5,6 +5,7 @@ pub mod input;
 mod invert_map;
 pub mod math;
 pub mod more_itertools;
+pub mod pathfinding;
 pub mod runner;
 pub mod vector2;
 pub mod vector3;

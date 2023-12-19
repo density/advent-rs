@@ -1,61 +1,22 @@
-use hymns::all_equal::AllEqual;
-use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashSet};
-
-use hymns::grid::Grid;
+use hymns::grid::{GPoint, Grid};
 use hymns::p2;
+use hymns::pathfinding::a_star;
 use hymns::runner::timed_run;
 use hymns::vector2::Point2;
 
 const INPUT: &str = include_str!("../input.txt");
 
-type Point = Point2<usize>;
-
-struct DijkstraQueue {
-    node_queue: BinaryHeap<(Reverse<usize>, AllEqual<Point>)>,
-    points_in_queue: HashSet<Point>,
-}
-
-impl DijkstraQueue {
-    fn new() -> Self {
-        Self {
-            node_queue: BinaryHeap::new(),
-            points_in_queue: HashSet::new(),
-        }
-    }
-
-    fn push(&mut self, point: Point, distance: usize) {
-        if self.points_in_queue.insert(point) {
-            self.node_queue.push((Reverse(distance), AllEqual(point)));
-        }
-    }
-
-    fn extract_min(&mut self) -> Option<Point> {
-        let (_, point) = self.node_queue.pop()?;
-        self.points_in_queue.remove(&point.0);
-        Some(point.0)
-    }
-}
-
 fn get_least_total_risk_path(grid: &Grid<u8>) -> usize {
-    let mut dist: Vec<Vec<Option<usize>>> = vec![vec![None; grid.cols()]; grid.rows()];
-    dist[0][0] = Some(0);
+    let (_, cost) = a_star(
+        &p2!(0, 0),
+        &p2!(grid.cols() - 1, grid.rows() - 1),
+        |_, p2| usize::from(grid[*p2]),
+        |p| grid.all_neighbors(p, false),
+        GPoint::manhattan_dist,
+    )
+    .unwrap();
 
-    let mut queue = DijkstraQueue::new();
-    queue.push(p2!(0, 0), 0);
-
-    while let Some(u) = queue.extract_min() {
-        for v in grid.all_neighbors(&u, false) {
-            let alt = dist[u.x][u.y].unwrap_or(0) + usize::from(grid[v]);
-
-            if alt < dist[v.x][v.y].unwrap_or(usize::MAX) {
-                dist[v.x][v.y] = Some(alt);
-                queue.push(v, alt);
-            }
-        }
-    }
-
-    dist[grid.rows() - 1][grid.cols() - 1].unwrap()
+    cost
 }
 
 fn build_grid(expanded: bool) -> Grid<u8> {

@@ -635,7 +635,7 @@ name = "aoc23-07"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -643,7 +643,7 @@ name = "aoc23-08"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
  "regex",
 ]
 
@@ -652,7 +652,7 @@ name = "aoc23-09"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -660,7 +660,7 @@ name = "aoc23-10"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -668,7 +668,7 @@ name = "aoc23-11"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -676,7 +676,7 @@ name = "aoc23-12"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
  "rayon",
 ]
 
@@ -685,7 +685,7 @@ name = "aoc23-13"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -693,7 +693,7 @@ name = "aoc23-14"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
  "regex",
 ]
 
@@ -702,7 +702,7 @@ name = "aoc23-15"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -710,7 +710,7 @@ name = "aoc23-16"
 version = "0.1.0"
 dependencies = [
  "hymns",
- "itertools 0.10.5",
+ "itertools 0.12.0",
 ]
 
 [[package]]
@@ -860,7 +860,7 @@ dependencies = [
  "humantime",
  "ignore",
  "im-rc",
- "indexmap",
+ "indexmap 2.1.0",
  "itertools 0.10.5",
  "jobserver",
  "lazycell",
@@ -1738,7 +1738,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "409268480841ad008e81c17ca5a293393fbf9f2b6c2f85b8ab9de1f0c5176a16"
 dependencies = [
  "gix-hash",
- "hashbrown",
+ "hashbrown 0.14.3",
  "parking_lot",
 ]
 
@@ -2195,6 +2195,12 @@ dependencies = [
 
 [[package]]
 name = "hashbrown"
+version = "0.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
+
+[[package]]
+name = "hashbrown"
 version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "290f1a1d9242c78d09ce40a5e87e7554ee637af1351968159f4952f028f75604"
@@ -2251,8 +2257,9 @@ checksum = "9a3a5bfb195931eeb336b2a7b4d761daec841b97f947d34394601737a7bba5e4"
 name = "hymns"
 version = "0.1.0"
 dependencies = [
- "itertools 0.10.5",
+ "itertools 0.12.0",
  "num-traits",
+ "priority-queue",
 ]
 
 [[package]]
@@ -2297,12 +2304,22 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
+version = "1.9.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bd070e393353796e801d209ad339e89596eb4c8d430d18ede6a1cced8fafbd99"
+dependencies = [
+ "autocfg",
+ "hashbrown 0.12.3",
+]
+
+[[package]]
+name = "indexmap"
 version = "2.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d530e1a18b1cb4c484e6e34556a0d948706958449fca0cab753d649f2bce3d1f"
 dependencies = [
  "equivalent",
- "hashbrown",
+ "hashbrown 0.14.3",
 ]
 
 [[package]]
@@ -2758,6 +2775,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "353e1ca18966c16d9deb1c69278edbc5f194139612772bd9537af60ac231e1e6"
 dependencies = [
  "elliptic-curve",
+]
+
+[[package]]
+name = "priority-queue"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fff39edfcaec0d64e8d0da38564fad195d2d51b680940295fcc307366e101e61"
+dependencies = [
+ "autocfg",
+ "indexmap 1.9.3",
 ]
 
 [[package]]
@@ -3358,7 +3385,7 @@ version = "0.19.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b5bb770da30e5cbfde35a2d7b9b8a2c4b8ef89548a7a6aeab5c9a576e3e7421"
 dependencies = [
- "indexmap",
+ "indexmap 2.1.0",
  "serde",
  "serde_spanned",
  "toml_datetime",

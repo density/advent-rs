@@ -9,6 +9,7 @@ edition = "2021"
 [dependencies]
 itertools = { workspace = true }
 num-traits = "0"
+priority-queue = "1"
 
 [lints]
 workspace = true
