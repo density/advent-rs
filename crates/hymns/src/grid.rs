@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use std::fmt::{Debug, Display, Formatter};
 use std::hash::{Hash, Hasher};
 use std::ops::{Index, IndexMut};
@@ -217,16 +218,24 @@ where
     }
 }
 
-impl<T> Index<GPoint> for Grid<T> {
+impl<T, U> Index<U> for Grid<T>
+where
+    U: Borrow<GPoint>,
+{
     type Output = T;
 
-    fn index(&self, p: GPoint) -> &Self::Output {
+    fn index(&self, p: U) -> &Self::Output {
+        let p = p.borrow();
         &self.elems[p.y][p.x]
     }
 }
 
-impl<T> IndexMut<GPoint> for Grid<T> {
-    fn index_mut(&mut self, p: GPoint) -> &mut Self::Output {
+impl<T, U> IndexMut<U> for Grid<T>
+where
+    U: Borrow<GPoint>,
+{
+    fn index_mut(&mut self, p: U) -> &mut Self::Output {
+        let p = p.borrow();
         &mut self.elems[p.y][p.x]
     }
 }
@@ -258,7 +267,9 @@ mod tests {
         assert!(!g.contains(p2!(5, 0)));
 
         assert_eq!(g[p2!(0, 0)], 0);
+        assert_eq!(g[&p2!(0, 0)], 0);
         assert_eq!(g[p2!(2, 2)], 12);
+        assert_eq!(g[&p2!(2, 2)], 12);
 
         assert!(g.iter_points().all(|p| g.get_value(&p) == Some(&g[p])));
         assert_eq!(g.get_value(&p2!(0, 3)), None);
@@ -267,8 +278,13 @@ mod tests {
         g.set_value(&p2!(1, 1), 999);
         assert_eq!(g.get_value(&p2!(1, 1)), Some(&999));
 
-        assert_eq!(g.row(1), vec![&5, &999, &7, &8, &9]);
-        assert_eq!(g.col(1), vec![&1, &999, &11]);
+        g[p2!(1, 1)] = 998;
+        assert_eq!(g.get_value(&p2!(1, 1)), Some(&998));
+        g[&p2!(1, 1)] = 997;
+        assert_eq!(g[p2!(1, 1)], 997);
+
+        assert_eq!(g.row(1), vec![&5, &997, &7, &8, &9]);
+        assert_eq!(g.col(1), vec![&1, &997, &11]);
     }
 
     #[test]

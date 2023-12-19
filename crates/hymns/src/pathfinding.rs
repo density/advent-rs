@@ -92,7 +92,7 @@ mod tests {
         let (path, cost) = a_star(
             &[GPoint::default()],
             |p| *p == goal,
-            |_, dst| usize::from(grid[*dst]),
+            |_, dst| usize::from(grid[dst]),
             |state| grid.all_neighbors(state, false),
             |p| p.manhattan_dist(&goal),
         )

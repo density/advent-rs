@@ -12,7 +12,7 @@ fn get_least_total_risk_path(grid: &Grid<u8>) -> usize {
     let (_, cost) = a_star(
         &[GPoint::origin()],
         |p| *p == goal,
-        |_, p2| usize::from(grid[*p2]),
+        |_, p2| usize::from(grid[p2]),
         |p| grid.all_neighbors(p, false),
         |p| p.manhattan_dist(&goal),
     )

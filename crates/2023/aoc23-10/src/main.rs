@@ -80,7 +80,7 @@ fn accessible_neighbors(scan: &Scan, point: &GPoint) -> Vec<GPoint> {
         .filter_map(|(origin_dir, neighbor)| {
             scan.get_value(&neighbor).and_then(|tile| {
                 if tile.is_accessible_from(origin_dir)
-                    && scan[*point].is_accessible_from(origin_dir.inverted())
+                    && scan[point].is_accessible_from(origin_dir.inverted())
                 {
                     Some(neighbor)
                 } else {
