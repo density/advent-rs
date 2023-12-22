@@ -1,4 +1,5 @@
 pub mod all_equal;
+pub mod bfs;
 pub mod default_map;
 pub mod geom;
 pub mod grid;

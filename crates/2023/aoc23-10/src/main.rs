@@ -1,6 +1,6 @@
 use std::collections::HashSet;
-use std::mem::swap;
 
+use hymns::bfs::bfs;
 use itertools::Itertools;
 
 use hymns::grid::{GPoint, Grid};
@@ -92,28 +92,11 @@ fn accessible_neighbors(scan: &Scan, point: &GPoint) -> Vec<GPoint> {
 }
 
 fn find_pipe(start: &GPoint, grid: &Scan) -> (usize, HashSet<GPoint>) {
-    let mut seen = HashSet::new();
-    let mut distance = 0;
-    let mut frontier = vec![*start];
-    let mut next_points = vec![];
+    let mut bfs_iter = bfs(*start, |p| accessible_neighbors(grid, p));
 
-    while !frontier.is_empty() {
-        distance += 1;
+    let distance = bfs_iter.by_ref().count();
 
-        for point in frontier.drain(..) {
-            seen.insert(point);
-
-            next_points.extend(
-                accessible_neighbors(grid, &point)
-                    .into_iter()
-                    .filter(|neighbor| !seen.contains(neighbor)),
-            );
-        }
-
-        swap(&mut frontier, &mut next_points);
-    }
-
-    (distance - 1, seen)
+    (distance, bfs_iter.seen)
 }
 
 fn load_grid() -> (GPoint, Scan) {
