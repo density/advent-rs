@@ -51,11 +51,9 @@ where
             return None;
         }
 
-        let result = self.next_frontier.clone();
-
         swap(&mut self.next_frontier, &mut self.frontier);
 
-        Some(result)
+        Some(self.frontier.clone())
     }
 }
 
