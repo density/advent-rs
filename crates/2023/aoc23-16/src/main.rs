@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use hymns::bfs::bfs;
 use itertools::Itertools;
 
 use hymns::grid::{GPoint, Grid};
@@ -85,6 +86,51 @@ fn count_energized(grid: &Grid<Tile>, start_point: GPoint, start_direction: Dire
     }
 
     seen.into_iter().unique_by(|b| b.location).count()
+}
+
+fn count_energized2(grid: &Grid<Tile>, start_point: GPoint, start_direction: Direction) -> usize {
+    let get_neighbors = |beam: &Beam| {
+        let mut new_beams = vec![];
+
+        let mut original_beam = beam.clone();
+
+        match grid[beam.location] {
+            Vertical if matches!(beam.facing, Right | Left) => {
+                new_beams.push(Beam::new(beam.location, Down));
+                original_beam.facing = Up;
+            }
+            Horizontal if matches!(beam.facing, Up | Down) => {
+                new_beams.push(Beam::new(beam.location, Left));
+                original_beam.facing = Right;
+            }
+            Forward => {
+                original_beam.facing = match beam.facing {
+                    Up => Right,
+                    Down => Left,
+                    Right => Up,
+                    Left => Down,
+                    _ => unreachable!(),
+                };
+            }
+            Backward => {
+                original_beam.facing = match beam.facing {
+                    Up => Left,
+                    Down => Right,
+                    Right => Down,
+                    Left => Up,
+                    _ => unreachable!(),
+                };
+            }
+            _ => (),
+        }
+
+        new_beams.push(original_beam);
+        new_beams
+    };
+
+    bfs(Beam::new(start_point, start_direction), get_neighbors);
+
+    todo!()
 }
 
 impl From<char> for Tile {
