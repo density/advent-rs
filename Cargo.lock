@@ -264,6 +264,9 @@ version = "0.1.0"
 [[package]]
 name = "aoc20-19"
 version = "0.1.0"
+dependencies = [
+ "rustc-hash",
+]
 
 [[package]]
 name = "aoc20-20"
@@ -523,6 +526,7 @@ version = "0.1.0"
 dependencies = [
  "hymns",
  "regex",
+ "rustc-hash",
 ]
 
 [[package]]
