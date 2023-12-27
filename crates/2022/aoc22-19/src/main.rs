@@ -1,16 +1,17 @@
-use std::collections::{HashMap, HashSet, VecDeque};
-use std::hash::{Hash, Hasher};
+use std::collections::VecDeque;
 use std::iter::IntoIterator;
 
 use regex::Regex;
+use rustc_hash::FxHashSet;
 
 use hymns::runner::timed_run;
 
 const INPUT: &str = include_str!("../input.txt");
 
 #[derive(Eq, PartialEq, Clone, Copy, Hash, Debug)]
+#[repr(usize)]
 enum Resource {
-    Ore,
+    Ore = 0,
     Clay,
     Obsidian,
     Geode,
@@ -59,63 +60,68 @@ impl Blueprint {
     }
 }
 
-#[derive(Debug, Eq, PartialEq, Clone)]
+#[derive(Debug, Hash, Eq, PartialEq, Clone)]
 struct State {
-    robots: HashMap<Robot, u64>,
-    bank: HashMap<Resource, u64>,
-}
-
-#[allow(clippy::derived_hash_with_manual_eq)]
-impl Hash for State {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        for resource in ALL_RESOURCES {
-            (
-                resource,
-                self.robots.get(&Robot(resource)).unwrap_or(&0),
-                self.bank[&resource],
-            )
-                .hash(state);
-        }
-    }
+    robots: [u64; 4],
+    bank: [u64; 4],
 }
 
 impl State {
     fn new() -> Self {
-        let robots = [
-            (Robot(Resource::Ore), 1),
-            (Robot(Resource::Clay), 0),
-            (Robot(Resource::Obsidian), 0),
-        ]
-        .into_iter()
-        .collect();
+        let mut robots = [0; 4];
+        robots[Resource::Ore as usize] = 1;
 
-        let bank = [
-            ((Resource::Ore), 0),
-            ((Resource::Clay), 0),
-            ((Resource::Obsidian), 0),
-            ((Resource::Geode), 0),
-        ]
-        .into_iter()
-        .collect();
+        Self {
+            robots,
+            bank: [0_u64; 4],
+        }
+    }
 
-        Self { robots, bank }
+    fn get_robots(&self, robot: Robot) -> u64 {
+        self.robots[robot.0 as usize]
+    }
+
+    fn get_resource(&self, resource: Resource) -> u64 {
+        self.bank[resource as usize]
+    }
+
+    fn add_resource(&mut self, resource: Resource, count: u64) {
+        self.bank[resource as usize] += count;
+    }
+
+    fn use_resource(&mut self, resource: Resource, count: u64) {
+        self.bank[resource as usize] = self.bank[resource as usize].checked_sub(count).unwrap();
+    }
+
+    fn add_robot(&mut self, robot: Robot) {
+        self.robots[robot.0 as usize] += 1;
+    }
+
+    fn increment_resources(&mut self) {
+        for resource in ALL_RESOURCES {
+            // don't increment geodes because we increment them as soon as we build the robot
+            if resource == Resource::Geode {
+                continue;
+            }
+            self.bank[resource as usize] += self.get_robots(Robot(resource));
+        }
     }
 
     fn can_build(&self, blueprint: &Blueprint, robot: Robot) -> bool {
-        if self.robots.get(&robot).unwrap_or(&0) >= &blueprint.usable_per_turn(robot.0) {
+        if self.get_robots(robot) >= blueprint.usable_per_turn(robot.0) {
             return false;
         }
 
         match robot {
-            Robot(Resource::Ore) => self.bank[&Resource::Ore] >= blueprint.ore_robot_ore,
-            Robot(Resource::Clay) => self.bank[&Resource::Ore] >= blueprint.clay_robot_ore,
+            Robot(Resource::Ore) => self.get_resource(Resource::Ore) >= blueprint.ore_robot_ore,
+            Robot(Resource::Clay) => self.get_resource(Resource::Ore) >= blueprint.clay_robot_ore,
             Robot(Resource::Obsidian) => {
-                self.bank[&Resource::Ore] >= blueprint.obsidian_robot_ore
-                    && self.bank[&Resource::Clay] >= blueprint.obsidian_robot_clay
+                self.get_resource(Resource::Ore) >= blueprint.obsidian_robot_ore
+                    && self.get_resource(Resource::Clay) >= blueprint.obsidian_robot_clay
             }
             Robot(Resource::Geode) => {
-                self.bank[&Resource::Ore] >= blueprint.geode_robot_ore
-                    && self.bank[&Resource::Obsidian] >= blueprint.geode_robot_obsidian
+                self.get_resource(Resource::Ore) >= blueprint.geode_robot_ore
+                    && self.get_resource(Resource::Obsidian) >= blueprint.geode_robot_obsidian
             }
         }
     }
@@ -123,43 +129,27 @@ impl State {
     fn build(&mut self, blueprint: &Blueprint, robot: Robot) {
         match robot {
             Robot(Resource::Ore) => {
-                self.bank
-                    .entry(Resource::Ore)
-                    .and_modify(|n| *n -= blueprint.ore_robot_ore);
+                self.use_resource(Resource::Ore, blueprint.ore_robot_ore);
             }
             Robot(Resource::Clay) => {
-                self.bank
-                    .entry(Resource::Ore)
-                    .and_modify(|n| *n -= blueprint.clay_robot_ore);
+                self.use_resource(Resource::Ore, blueprint.clay_robot_ore);
             }
             Robot(Resource::Obsidian) => {
-                self.bank
-                    .entry(Resource::Ore)
-                    .and_modify(|n| *n -= blueprint.obsidian_robot_ore);
-                self.bank
-                    .entry(Resource::Clay)
-                    .and_modify(|n| *n -= blueprint.obsidian_robot_clay);
+                self.use_resource(Resource::Ore, blueprint.obsidian_robot_ore);
+                self.use_resource(Resource::Clay, blueprint.obsidian_robot_clay);
             }
             Robot(Resource::Geode) => {
-                self.bank
-                    .entry(Resource::Ore)
-                    .and_modify(|n| *n -= blueprint.geode_robot_ore);
-                self.bank
-                    .entry(Resource::Obsidian)
-                    .and_modify(|n| *n -= blueprint.geode_robot_obsidian);
+                self.use_resource(Resource::Ore, blueprint.geode_robot_ore);
+                self.use_resource(Resource::Obsidian, blueprint.geode_robot_obsidian);
             }
         }
 
-        self.robots.entry(robot).and_modify(|n| *n += 1);
+        self.add_robot(robot);
     }
 
     fn ticked(&self) -> Self {
         let mut new_state = self.clone();
-
-        for (Robot(resource), count) in &self.robots {
-            new_state.bank.entry(*resource).and_modify(|n| *n += count);
-        }
-
+        new_state.increment_resources();
         new_state
     }
 }
@@ -193,7 +183,7 @@ fn run_simulation(step_count: u64, blueprints: &[Blueprint]) -> Vec<(u64, u64)> 
 
     for blueprint in blueprints {
         let mut max_geode_count = 0;
-        let mut seen_states = HashSet::new();
+        let mut seen_states = FxHashSet::default();
 
         let mut queue = VecDeque::new();
         queue.push_back(State::new());
@@ -204,11 +194,11 @@ fn run_simulation(step_count: u64, blueprints: &[Blueprint]) -> Vec<(u64, u64)> 
 
             for _ in 0..queue.len() {
                 let cur_state = queue.pop_front().unwrap();
-                if cur_state.bank[&Resource::Geode] < max_geode_count {
+                if cur_state.get_resource(Resource::Geode) < max_geode_count {
                     continue;
                 }
 
-                max_geode_count = max_geode_count.max(cur_state.bank[&Resource::Geode]);
+                max_geode_count = max_geode_count.max(cur_state.get_resource(Resource::Geode));
 
                 // if we can build a geode robot, build it
                 if cur_state.can_build(blueprint, Robot(Resource::Geode)) {
@@ -217,10 +207,7 @@ fn run_simulation(step_count: u64, blueprints: &[Blueprint]) -> Vec<(u64, u64)> 
 
                     // immediately add all geodes this robot will create
                     let t_rem: u64 = step_count - ts - 1;
-                    new_state
-                        .bank
-                        .entry(Resource::Geode)
-                        .and_modify(|n| *n += t_rem);
+                    new_state.add_resource(Resource::Geode, t_rem);
 
                     next_states.push(new_state);
                 } else {
@@ -239,11 +226,11 @@ fn run_simulation(step_count: u64, blueprints: &[Blueprint]) -> Vec<(u64, u64)> 
                 }
             }
 
-            for state in next_states.drain(..) {
-                if seen_states.insert(state.clone()) {
-                    queue.push_back(state);
-                }
-            }
+            queue.extend(
+                next_states
+                    .drain(..)
+                    .filter(|state| seen_states.insert(state.clone())),
+            );
         }
 
         result.push((blueprint.id, max_geode_count));
