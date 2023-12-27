@@ -17,6 +17,7 @@ itertools = "0"
 nom = "7"
 rayon = "1"
 regex = "1"
+rustc-hash = "1"
 
 [workspace.lints.clippy]
 pedantic = { level = "warn" }
