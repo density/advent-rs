@@ -1,4 +1,4 @@
-use rustc_hash::{FxHashMap, FxHashSet};
+use hashbrown::{HashMap, HashSet};
 
 use hymns::grid::{GPoint, Grid};
 use hymns::p2;
@@ -10,7 +10,7 @@ use crate::Terrain::{Forest, Path, Slope};
 
 const INPUT: &str = include_str!("../input.txt");
 
-type Graph = FxHashMap<GPoint, Vec<(GPoint, usize)>>;
+type Graph = HashMap<GPoint, Vec<(GPoint, usize)>>;
 
 #[derive(Eq, PartialEq)]
 enum Terrain {
@@ -35,7 +35,7 @@ impl From<char> for Terrain {
 
 fn dfs(
     grid: &Grid<Terrain>,
-    seen: &mut FxHashSet<GPoint>,
+    seen: &mut HashSet<GPoint>,
     goal: &GPoint,
     point: &GPoint,
     dist: usize,
@@ -71,7 +71,7 @@ fn dfs(
 
 fn dfs_graph(
     graph: &Graph,
-    seen: &mut FxHashSet<GPoint>,
+    seen: &mut HashSet<GPoint>,
     goal: &GPoint,
     point: &GPoint,
     dist: usize,
@@ -155,7 +155,7 @@ fn build_contracted_graph() -> (GPoint, GPoint, Graph) {
         grid.rows() - 1
     );
 
-    let mut graph = FxHashMap::default();
+    let mut graph = HashMap::default();
 
     dfs_contracted(&grid, &goal, &start, &start, &mut graph, 0, &start);
 
@@ -178,7 +178,7 @@ fn part1() -> usize {
 
     dfs(
         &grid,
-        &mut FxHashSet::default(),
+        &mut HashSet::default(),
         &goal,
         &start,
         0,
@@ -195,7 +195,7 @@ fn part2() -> usize {
 
     dfs_graph(
         &graph,
-        &mut FxHashSet::default(),
+        &mut HashSet::default(),
         &goal,
         &start,
         0,

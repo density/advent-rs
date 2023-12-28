@@ -9,7 +9,7 @@ edition = "2021"
 workspace = true
 
 [dependencies]
+hashbrown = { workspace = true }
 hymns = { workspace = true }
 itertools = { workspace = true }
 regex = { workspace = true }
-rustc-hash = "1"

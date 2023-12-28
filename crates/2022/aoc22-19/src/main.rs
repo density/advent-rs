@@ -1,8 +1,8 @@
+use hashbrown::HashSet;
 use std::collections::VecDeque;
 use std::iter::IntoIterator;
 
 use regex::Regex;
-use rustc_hash::FxHashSet;
 
 use hymns::runner::timed_run;
 
@@ -183,7 +183,7 @@ fn run_simulation(step_count: u64, blueprints: &[Blueprint]) -> Vec<(u64, u64)> 
 
     for blueprint in blueprints {
         let mut max_geode_count = 0;
-        let mut seen_states = FxHashSet::default();
+        let mut seen_states: HashSet<State> = HashSet::default();
 
         let mut queue = VecDeque::new();
         queue.push_back(State::new());
