@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 rustc-hash = { workspace = true }
+hashbrown = "0"
 
 [lints]
 workspace = true

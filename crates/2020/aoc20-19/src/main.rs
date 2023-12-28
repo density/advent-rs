@@ -1,4 +1,4 @@
-use rustc_hash::{FxHashMap, FxHashSet};
+use hashbrown::{HashMap, HashSet};
 use std::time::Instant;
 
 const INPUT: &str = include_str!("../input.txt");
@@ -30,8 +30,8 @@ fn parse_rule(s: &str) -> Vec<Rule> {
 
 fn make_rules<'a, 'b>(
     line_iter: &'a mut impl Iterator<Item = &'b str>,
-) -> FxHashMap<usize, Vec<Rule>> {
-    let mut rules = FxHashMap::default();
+) -> HashMap<usize, Vec<Rule>> {
+    let mut rules = HashMap::default();
 
     for line in line_iter.take_while(|line| !line.is_empty()) {
         let mut split = line.split(": ");
@@ -49,8 +49,8 @@ fn make_rules<'a, 'b>(
     rules
 }
 
-fn remove_lone_non_terminals(rules: &mut FxHashMap<usize, Vec<Rule>>) {
-    let mut remapping = FxHashMap::default();
+fn remove_lone_non_terminals(rules: &mut HashMap<usize, Vec<Rule>>) {
+    let mut remapping: HashMap<usize, Vec<Rule>> = HashMap::default();
 
     for (left, right_sides) in rules.iter() {
         if right_sides
@@ -77,10 +77,10 @@ fn remove_lone_non_terminals(rules: &mut FxHashMap<usize, Vec<Rule>>) {
     rules.extend(remapping.drain());
 }
 
-fn remove_more_than_two_nonterminals(rules: &mut FxHashMap<usize, Vec<Rule>>) {
+fn remove_more_than_two_nonterminals(rules: &mut HashMap<usize, Vec<Rule>>) {
     let mut next_rule_id = rules.keys().max().unwrap() + 1;
 
-    let mut to_add = FxHashMap::default();
+    let mut to_add: HashMap<usize, Vec<Rule>> = HashMap::default();
 
     for (left, right_sides) in rules.iter() {
         let is_correct_length = right_sides.iter().all(|rule| {
@@ -114,10 +114,10 @@ fn remove_more_than_two_nonterminals(rules: &mut FxHashMap<usize, Vec<Rule>>) {
     rules.extend(to_add.drain());
 }
 
-fn matches_rules3(test_str: &str, rules: &FxHashMap<usize, Vec<Rule>>) -> bool {
+fn matches_rules3(test_str: &str, rules: &HashMap<usize, Vec<Rule>>) -> bool {
     let n = test_str.len();
 
-    let mut memo: Vec<Vec<Option<FxHashSet<usize>>>> = vec![vec![None; n + 1]; n + 1];
+    let mut memo: Vec<Vec<Option<HashSet<usize>>>> = vec![vec![None; n + 1]; n + 1];
 
     // See https://en.wikipedia.org/wiki/CYK_algorithm
     for (s, c) in test_str.chars().enumerate() {
@@ -126,7 +126,7 @@ fn matches_rules3(test_str: &str, rules: &FxHashMap<usize, Vec<Rule>>) -> bool {
                 match rhs {
                     Rule::Terminal(some_terminal) if *some_terminal == c => {
                         memo[1][s + 1]
-                            .get_or_insert_with(FxHashSet::default)
+                            .get_or_insert_with(HashSet::default)
                             .insert(*left);
                     }
                     _ => (),
@@ -154,7 +154,7 @@ fn matches_rules3(test_str: &str, rules: &FxHashMap<usize, Vec<Rule>>) -> bool {
 
                                     if matches_second {
                                         memo[l][s]
-                                            .get_or_insert_with(FxHashSet::default)
+                                            .get_or_insert_with(HashSet::default)
                                             .insert(*left);
                                         break;
                                     }

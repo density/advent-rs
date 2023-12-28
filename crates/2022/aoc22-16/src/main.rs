@@ -1,16 +1,15 @@
 use std::collections::VecDeque;
 
-use regex::Regex;
-use rustc_hash::{FxHashMap, FxHashSet};
-
+use hashbrown::{HashMap, HashSet};
 use hymns::runner::timed_run;
+use regex::Regex;
 
 const INPUT: &str = include_str!("../input.txt");
 
 type Pressure = usize;
 type Valve = &'static str;
-type FlowMap = FxHashMap<Valve, Pressure>;
-type AdjList = FxHashMap<Valve, Vec<Valve>>;
+type FlowMap = HashMap<Valve, Pressure>;
+type AdjList = HashMap<Valve, Vec<Valve>>;
 
 struct CaveSystem {
     flows: FlowMap,
@@ -21,9 +20,9 @@ impl CaveSystem {
     fn new() -> Self {
         let re = Regex::new(r"Valve (?P<src>\w+).+=(?P<flow>\d+).+ves? (?P<dest>.+)").unwrap();
 
-        let mut flows = FxHashMap::default();
+        let mut flows = HashMap::default();
 
-        let mut adj = FxHashMap::default();
+        let mut adj = HashMap::default();
 
         for line in INPUT.lines() {
             let caps = re.captures(line).unwrap();
@@ -93,7 +92,7 @@ struct State {
     ts: usize,
     my_loc: &'static str,
     elephant_loc: Option<&'static str>,
-    open: FxHashSet<&'static str>,
+    open: HashSet<&'static str>,
     released: usize,
     rate: usize,
 }
@@ -113,12 +112,12 @@ fn part1() -> usize {
         ts: 1,
         my_loc: "AA",
         elephant_loc: None,
-        open: FxHashSet::default(),
+        open: HashSet::default(),
         released: 0,
         rate: 0,
     });
 
-    let mut memo: FxHashMap<_, _> = FxHashMap::default();
+    let mut memo: HashMap<_, _> = HashMap::default();
 
     while let Some(cur) = queue.pop_front() {
         if let Some(&past_score) = memo.get(&cur.key()) {
@@ -155,7 +154,7 @@ struct StateWithElephant {
     timestamp: usize,
     location: &'static str,
     elephant_location: &'static str,
-    opened: FxHashSet<&'static str>,
+    opened: HashSet<&'static str>,
     score: usize,
 }
 
@@ -169,12 +168,12 @@ fn part2() -> usize {
         ts: 5,
         my_loc: "AA",
         elephant_loc: Some("AA"),
-        open: FxHashSet::default(),
+        open: HashSet::default(),
         released: 0,
         rate: 0,
     });
 
-    let mut memo: FxHashMap<_, _> = FxHashMap::default();
+    let mut memo: HashMap<_, _> = HashMap::default();
 
     while let Some(cur) = queue.pop_front() {
         if let Some(&past_score) = memo.get(&cur.key()) {

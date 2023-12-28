@@ -1,3 +1,4 @@
+use std::fmt::{Display, Formatter};
 use std::mem;
 use std::ops::{Add, AddAssign, Mul};
 
@@ -55,6 +56,12 @@ impl Direction {
 pub struct Point2<T: PrimInt + AddAssign> {
     pub x: T,
     pub y: T,
+}
+
+impl<T: PrimInt + AddAssign + Display> Display for Point2<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.y, self.x)
+    }
 }
 
 impl<T: PrimInt + AddAssign> Point2<T> {

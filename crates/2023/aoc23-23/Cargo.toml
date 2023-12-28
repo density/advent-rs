@@ -1,15 +1,15 @@
 [package]
-name = "aoc22-16"
+name = "aoc23-23"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies]
-hymns = { workspace = true }
-regex = { workspace = true }
-rustc-hash = { workspace = true }
-hashbrown = "0"
-
 [lints]
 workspace = true
+
+[dependencies]
+hymns = { workspace = true }
+itertools = { workspace = true }
+regex = { workspace = true }
+rustc-hash = "1"
