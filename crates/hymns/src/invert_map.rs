@@ -1,5 +1,5 @@
-use std::collections::hash_map::Entry;
-use std::collections::HashMap;
+use hashbrown::hash_map::Entry;
+use hashbrown::HashMap;
 use std::hash::{BuildHasher, Hash};
 
 pub trait Invertible<K, V>

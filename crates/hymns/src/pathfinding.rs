@@ -1,5 +1,6 @@
+use hashbrown::HashMap;
 use std::cmp::Reverse;
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 use std::hash::Hash;
 
 use priority_queue::PriorityQueue;

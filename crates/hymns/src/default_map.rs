@@ -1,5 +1,5 @@
+use hashbrown::{hash_map, HashMap};
 use std::borrow::Borrow;
-use std::collections::{hash_map, HashMap};
 use std::hash::Hash;
 use std::ops::Index;
 
@@ -141,8 +141,8 @@ where
 #[cfg(test)]
 mod tests {
     use crate::default_map::DefaultHashMap;
+    use hashbrown::HashMap;
     use itertools::Itertools;
-    use std::collections::HashMap;
 
     #[test]
     fn test_hashmap() {
