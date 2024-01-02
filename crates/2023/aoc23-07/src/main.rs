@@ -5,7 +5,7 @@ use itertools::Itertools;
 const INPUT: &str = include_str!("../input.txt");
 
 #[derive(Debug, Eq, PartialEq, Hash, Ord, PartialOrd, Copy, Clone)]
-enum HandType {
+enum Category {
     HighCard,
     OnePair,
     TwoPair,
@@ -35,7 +35,7 @@ enum Card {
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Debug)]
 struct Hand {
-    hand_type: HandType,
+    category: Category,
     cards: [Card; 5],
     bid: u64,
 }
@@ -71,13 +71,13 @@ impl Hand {
             .unwrap();
 
         Self {
-            hand_type: Self::hand_type(cards),
+            category: Self::category(cards),
             bid,
             cards,
         }
     }
 
-    fn hand_type(cards: [Card; 5]) -> HandType {
+    fn category(cards: [Card; 5]) -> Category {
         let mut counts: Counter<Card> = cards.iter().copied().collect_counter();
 
         let joker_count = counts.remove(&Card::Joker).unwrap_or_default();
@@ -85,13 +85,13 @@ impl Hand {
         let counts = counts.into_values().collect_counter();
 
         if counts[&5] == 1 {
-            return HandType::FiveOfAKind;
+            return Category::FiveOfAKind;
         }
 
         if counts[&4] == 1 {
             match joker_count {
-                0 => return HandType::FourOfAKind,
-                1 => return HandType::FiveOfAKind,
+                0 => return Category::FourOfAKind,
+                1 => return Category::FiveOfAKind,
                 _ => unreachable!(),
             }
         }
@@ -100,40 +100,40 @@ impl Hand {
             match joker_count {
                 0 => {
                     if counts[&2] == 1 {
-                        return HandType::FullHouse;
+                        return Category::FullHouse;
                     }
-                    return HandType::ThreeOfAKind;
+                    return Category::ThreeOfAKind;
                 }
-                1 => return HandType::FourOfAKind,
-                2 => return HandType::FiveOfAKind,
+                1 => return Category::FourOfAKind,
+                2 => return Category::FiveOfAKind,
                 _ => unreachable!(),
             }
         }
 
         if counts[&2] == 2 {
             match joker_count {
-                0 => return HandType::TwoPair,
-                1 => return HandType::FullHouse,
+                0 => return Category::TwoPair,
+                1 => return Category::FullHouse,
                 _ => unreachable!(),
             }
         }
 
         if counts[&2] == 1 {
             match joker_count {
-                0 => return HandType::OnePair,
-                1 => return HandType::ThreeOfAKind,
-                2 => return HandType::FourOfAKind,
-                3 => return HandType::FiveOfAKind,
+                0 => return Category::OnePair,
+                1 => return Category::ThreeOfAKind,
+                2 => return Category::FourOfAKind,
+                3 => return Category::FiveOfAKind,
                 _ => unreachable!(),
             }
         }
 
         match joker_count {
-            0 => HandType::HighCard,
-            1 => HandType::OnePair,
-            2 => HandType::ThreeOfAKind,
-            3 => HandType::FourOfAKind,
-            4 | 5 => HandType::FiveOfAKind,
+            0 => Category::HighCard,
+            1 => Category::OnePair,
+            2 => Category::ThreeOfAKind,
+            3 => Category::FourOfAKind,
+            4 | 5 => Category::FiveOfAKind,
             _ => unreachable!(),
         }
     }

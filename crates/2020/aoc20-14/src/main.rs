@@ -7,38 +7,38 @@ const INPUT: &str = include_str!("../input.txt");
 
 #[derive(Default)]
 struct Mask {
-    mask_str: Box<[u8]>,
-    and_mask: u64,
-    or_mask: u64,
+    str: Box<[u8]>,
+    and: u64,
+    or: u64,
 }
 
 impl Mask {
     fn apply(&self, n: u64) -> u64 {
-        n & self.and_mask | self.or_mask
+        n & self.and | self.or
     }
 }
 
 impl From<&[u8]> for Mask {
     fn from(bytes: &[u8]) -> Self {
-        let mut and_mask = 0;
-        let mut or_mask = 0;
+        let mut and = 0;
+        let mut or = 0;
 
         for c in bytes {
-            and_mask <<= 1;
-            or_mask <<= 1;
+            and <<= 1;
+            or <<= 1;
 
             match c {
-                b'X' => and_mask |= 1,
+                b'X' => and |= 1,
                 b'0' => (),
-                b'1' => or_mask |= 1,
+                b'1' => or |= 1,
                 _ => unreachable!(),
             }
         }
 
         Self {
-            mask_str: bytes.into(),
-            and_mask,
-            or_mask,
+            str: bytes.into(),
+            and,
+            or,
         }
     }
 }
@@ -119,7 +119,7 @@ fn addresses_from_mask(orig_mask: &[u8]) -> impl Iterator<Item = usize> {
 }
 
 fn generate_mask_from_address(address: usize, mask: &Mask) -> Vec<u8> {
-    let mut mask = mask.mask_str.to_vec();
+    let mut mask = mask.str.to_vec();
     let mut cur_address = address;
 
     for mask_offset in (0..mask.len()).rev() {

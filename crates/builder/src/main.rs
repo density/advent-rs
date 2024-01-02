@@ -7,7 +7,8 @@ use cargo::ops::NewOptions;
 use cargo::ops::VersionControl::NoVcs;
 use cargo::Config;
 
-const DEFAULT_DEPS: &str = r"hymns = { workspace = true }
+const DEFAULT_DEPS: &str = r"hashbrown = { workspace = true }
+hymns = { workspace = true }
 itertools = { workspace = true }
 regex = { workspace = true }";
 

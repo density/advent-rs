@@ -1,5 +1,6 @@
 pub mod all_equal;
 pub mod default_map;
+pub mod formatting;
 pub mod geom;
 pub mod grid;
 pub mod input;
