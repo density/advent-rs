@@ -771,6 +771,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "aoc23-21"
+version = "0.1.0"
+dependencies = [
+ "hymns",
+ "itertools 0.11.0",
+ "regex",
+]
+
+[[package]]
 name = "aoc23-23"
 version = "0.1.0"
 dependencies = [
