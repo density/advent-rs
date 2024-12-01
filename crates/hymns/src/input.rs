@@ -14,34 +14,28 @@ where
 }
 
 // TODO: Once `Pattern` is stablized, consolidate these
-pub fn parse_str_delimited_numbers<'a, T: 'a>(
+pub fn parse_str_delimited_numbers<'a, T>(
     s: &'a str,
     delim: &'a str,
 ) -> impl Iterator<Item = T> + 'a
 where
-    T: PrimInt + FromStr,
+    T: PrimInt + FromStr + 'a,
     <T as FromStr>::Err: Debug,
 {
     parse_iterable(s.split(delim))
 }
 
-pub fn parse_char_delimited_numbers<'a, T: 'a>(
-    s: &'a str,
-    delim: char,
-) -> impl Iterator<Item = T> + 'a
+pub fn parse_char_delimited_numbers<'a, T>(s: &'a str, delim: char) -> impl Iterator<Item = T> + 'a
 where
-    T: PrimInt + FromStr,
+    T: PrimInt + FromStr + 'a,
     <T as FromStr>::Err: Debug,
 {
     parse_iterable(s.split(delim))
 }
 
-pub fn parse_numbers_only<'a, T: 'a>(
-    s: &'a str,
-    allow_negatives: bool,
-) -> impl Iterator<Item = T> + 'a
+pub fn parse_numbers_only<'a, T>(s: &'a str, allow_negatives: bool) -> impl Iterator<Item = T> + 'a
 where
-    T: PrimInt + FromStr,
+    T: PrimInt + FromStr + 'a,
     <T as FromStr>::Err: Debug,
 {
     s.split(move |c: char| {

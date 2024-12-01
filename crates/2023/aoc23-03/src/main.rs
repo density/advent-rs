@@ -32,7 +32,7 @@ impl<'a> PartIterator<'a> {
     }
 }
 
-impl<'a> Iterator for PartIterator<'a> {
+impl Iterator for PartIterator<'_> {
     type Item = Part;
 
     fn next(&mut self) -> Option<Self::Item> {

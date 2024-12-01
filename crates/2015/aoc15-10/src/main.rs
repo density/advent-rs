@@ -8,7 +8,7 @@ const INPUT: &str = include_str!("../input.txt");
 fn look_and_say(input: &str) -> String {
     let mut s = String::new();
 
-    for (key, group) in &input.chars().group_by(|&c| c) {
+    for (key, group) in &input.chars().chunk_by(|&c| c) {
         s.push_str(&group.count().to_string());
         s.push(key);
     }

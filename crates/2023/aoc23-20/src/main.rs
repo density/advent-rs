@@ -26,7 +26,7 @@ struct Pulse<'a> {
     level: Level,
 }
 
-impl<'a> Pulse<'a> {
+impl Pulse<'_> {
     const fn button_press() -> Self {
         Self {
             src: "broadcaster",

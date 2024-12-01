@@ -149,15 +149,6 @@ fn part1() -> usize {
     max_released
 }
 
-#[derive(Eq, PartialEq, Debug)]
-struct StateWithElephant {
-    timestamp: usize,
-    location: &'static str,
-    elephant_location: &'static str,
-    opened: HashSet<&'static str>,
-    score: usize,
-}
-
 fn part2() -> usize {
     let cave_system = CaveSystem::new();
 

@@ -1,5 +1,5 @@
 use std::collections::VecDeque;
-use std::fmt::{Display, Formatter};
+use std::fmt::{Display, Formatter, Write};
 use std::ops::Add;
 use std::str::FromStr;
 
@@ -37,16 +37,16 @@ impl Add for Digit {
         }
     }
 }
-impl ToString for Digit {
-    fn to_string(&self) -> String {
-        match self {
-            Digit::Zero => "0",
-            Digit::One => "1",
-            Digit::Two => "2",
-            Digit::MinusOne => "-",
-            Digit::MinusTwo => "=",
-        }
-        .to_string()
+
+impl Display for Digit {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_char(match self {
+            Digit::Zero => '0',
+            Digit::One => '1',
+            Digit::Two => '2',
+            Digit::MinusOne => '-',
+            Digit::MinusTwo => '=',
+        })
     }
 }
 

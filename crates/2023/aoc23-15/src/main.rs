@@ -54,10 +54,7 @@ fn part2() -> usize {
     }
 
     for instruction in INPUT.split(',') {
-        let (label, focal_length) = instruction
-            .split(|c| c == '=' || c == '-')
-            .collect_tuple()
-            .unwrap();
+        let (label, focal_length) = instruction.split(['=', '-']).collect_tuple().unwrap();
 
         let box_id = usize::from(hash(label));
 

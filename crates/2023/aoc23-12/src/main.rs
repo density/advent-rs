@@ -16,7 +16,7 @@ struct Solver<'a> {
     groupings: &'a [usize],
 }
 
-impl<'a> Solver<'a> {
+impl Solver<'_> {
     fn solve(&mut self, line_off: usize, group_off: usize, hash_count: usize) -> usize {
         let key = (line_off, group_off, hash_count);
 

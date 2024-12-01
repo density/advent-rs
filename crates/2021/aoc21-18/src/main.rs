@@ -137,7 +137,7 @@ impl Tree {
             }
 
             previous = Rc::clone(&current_node.upgrade().unwrap());
-            parent = previous.borrow().parent.clone();
+            parent.clone_from(&previous.borrow().parent);
         }
 
         None

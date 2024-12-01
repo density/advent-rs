@@ -8,7 +8,7 @@ fn get_passports() -> impl Iterator<Item = HashMap<&'static str, &'static str>> 
     INPUT
         .split("\n\n")
         .map(|spec| {
-            spec.split(|c| c == '\n' || c == ' ')
+            spec.split(['\n', ' '])
                 .map(|component| {
                     let mut split = component.split(':');
                     (split.next().unwrap(), split.next().unwrap())

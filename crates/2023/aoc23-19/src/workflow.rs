@@ -54,7 +54,7 @@ pub(crate) enum Verdict<'a> {
     Jump(&'a str),
 }
 
-impl<'a> From<char> for Verdict<'a> {
+impl From<char> for Verdict<'_> {
     fn from(value: char) -> Self {
         match value {
             'A' => Accept,
